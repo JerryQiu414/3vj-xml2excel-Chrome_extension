@@ -801,8 +801,8 @@
 {"category": "LKDOOR", "part_number": "GRD7012GRG010", "name": "GRD7012-GRG010 单面晶钻欧灰玻璃", "usage_formula": "{length*width}/1000000", "min_usage": 0.4, "quote_unit": "㎡", "supplier": "盾美", "supplier_code": "DM", "remark": null, "_sheet": "LKDOOR"}
 {"category": "LKDOOR", "part_number": "GRD7012GRG011", "name": "GRD7012-GRG011 单面晶钻茶灰玻璃", "usage_formula": "{length*width}/1000000", "min_usage": 0.4, "quote_unit": "㎡", "supplier": "盾美", "supplier_code": "DM", "remark": null, "_sheet": "LKDOOR"}
 {"category": "LKDOOR", "part_number": "GRD7012GRG015", "name": "GRD7012-GRG015 45度B灰茶玻璃", "usage_formula": "{length*width}/1000000", "min_usage": 0.4, "quote_unit": "㎡", "supplier": "盾美", "supplier_code": "DM", "remark": null, "_sheet": "LKDOOR"}
-{"supplier": "顾信", "supplier_code": "GX", "_sheet": "供应商"}
-{"supplier": "米格", "supplier_code": "MG", "_sheet": "供应商"}
-{"supplier": "君华晟", "supplier_code": "GHC", "_sheet": "供应商"}
-{"supplier": "申凡", "supplier_code": "SF", "_sheet": "供应商"}
-{"supplier": "盾美", "supplier_code": "DM", "_sheet": "供应商"}
+{"supplier": "GX", "supplier_code": "GX", "_sheet": "供应商"}
+{"supplier": "MG", "supplier_code": "MG", "_sheet": "供应商"}
+{"supplier": "GHC", "supplier_code": "GHC", "_sheet": "供应商"}
+{"supplier": "SF", "supplier_code": "SF", "_sheet": "供应商"}
+{"supplier": "DM", "supplier_code": "DM", "_sheet": "供应商"}
