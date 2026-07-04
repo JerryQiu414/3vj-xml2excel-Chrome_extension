@@ -1,0 +1,375 @@
+{
+    "name": "BOM转换规则配置",
+    "version": "1.1.0",
+    "description": "物料清单(BOM)转换规则，支持自定义数据源、字段映射、过滤、排序、汇总等",
+    
+    "data_sources": {
+        "Panel": {
+            "xpath": ".//Cabinet//Panel",
+            "parent_xpath": ".//Cabinet"
+        },
+        "Metal": {
+            "xpath": ".//Cabinet/Metals/Metal",
+            "parent_xpath": ".//Cabinet"
+        },
+        "Line": {
+            "xpath": ".//baseLine/lines/Line",
+            "parent_xpath": null
+        },
+        "SubTable": {
+            "xpath": ".//tables/table/TableBoard/Table/SubTable",
+            "parent_xpath": null
+        }
+    },
+    
+    "type_display": {
+        "Panel": "板件",
+        "Metal": "五金",
+        "Line": "线条",
+        "SubTable": "台面"
+    },
+    
+    "field_mappings": {
+        "Panel": {
+            "partNumber": ["BasicMaterialMCode", "PartNumber"],
+            "name": "Name",
+            "material": "BasicMaterial",
+            "color": "Material",
+            "length": "Length",
+            "width": "Width",
+            "thickness": "Thickness",
+            "qty": "Num",
+            "unit": "Unit",
+            "cabinetNo": "parent.CabinetNo",
+            "cabinetName": "parent.Name",
+            "barcode": "ID",
+            "category": "Category",
+            "edgeBand": "EdgeGroupTypeName",
+            "module": "parent.OrderType",
+            "actualLength": ["ProduceValues.ActualLength1", "ActualLength2"],
+            "actualWidth": ["ProduceValues.ActualWidth1", "ActualWidth2"]
+        },
+        "Metal": {
+            "partNumber": "PartNumber",
+            "name": "Name",
+            "material": "Material",
+            "length": "length",
+            "width": "width",
+            "thickness": "height",
+            "qty": "Num",
+            "unit": "Unit",
+            "cabinetNo": "parent.CabinetNo",
+            "cabinetName": "parent.Name",
+            "barcode": "Id"
+        },
+        "Line": {
+            "partNumber": ["partNumber", "PartNumber"],
+            "name": ["name", "Name"],
+            "length": "width",
+            "width": "height",
+            "thickness": "depth",
+            "qty": null,
+            "unit": "固定:根",
+            "cabinetNo": "CabinetNo",
+            "barcode": "Id"
+        },
+        "SubTable": {
+            "partNumber": ["partNumber", "PartNumber"],
+            "name": ["name", "Name"],
+            "material": "Material",
+            "length": "width",
+            "width": "depth",
+            "thickness": "parent.height",
+            "qty": "Num",
+            "unit": "固定:块",
+            "barcode": "parent.Id"
+        }
+    },
+    
+    "calculation_rules": {
+        "length": {
+            "enabled": true,
+            "fields": ["length"],
+            "unit": "m",
+            "unit_conversion": 0.001,
+            "aggregate": "sum"
+        },
+        "area": {
+            "enabled": true,
+            "formula": "length * width / 1000000",
+            "unit": "m²",
+            "aggregate": "sum",
+            "round": 4
+        },
+        "single": {
+            "enabled": true,
+            "fields": ["qty"],
+            "unit": "件",
+            "aggregate": "sum"
+        }
+    },
+    
+    "spec_formats": {
+        "Panel": "{length}x{width}x{thickness}",
+        "Metal": "{length}x{width}x{thickness}",
+        "Line": "{length}x{width}x{thickness}",
+        "SubTable": "{length}x{width}x{thickness}"
+    },
+    
+    "spec_unit": "mm",
+    
+    "filter_rules": {
+        "skip_empty_part_number": true,
+        "skip_zero_qty": false,
+        "min_qty": 0
+    },
+    
+    "group_by": "partNumber",
+    
+    "sort_by": [
+        "typeCode",
+        "partNumber"
+    ],
+    
+    "cabinet_sort": {
+        "enabled": true,
+        "type": "numeric",
+        "separator": ", "
+    },
+    
+    "output_columns": [
+        {"key": "index", "name": "序号", "width": 8},
+        {"key": "partNumber", "name": "物料编号", "width": 20},
+        {"key": "name", "name": "物料名称", "width": 35},
+        {"key": "spec", "name": "规格(mm)", "width": 20},
+        {"key": "material", "name": "材质", "width": 15},
+        {"key": "type", "name": "类型", "width": 10},
+        {"key": "totalQty", "name": "总数量", "width": 12},
+        {"key": "unit", "name": "单位", "width": 10},
+        {"key": "totalLength", "name": "总长度(m)", "width": 15},
+        {"key": "totalArea", "name": "总面积(m²)", "width": 15},
+        {"key": "cabinets", "name": "使用柜体", "width": 25}
+    ],
+    
+    "stats_categories": ["Panel", "Metal", "Line", "SubTable"],
+    
+    "preview_limit": 50,
+    
+    "csv_encoding": "utf-8-sig",
+    
+    "remove_suffixes": {
+        "enabled": true,
+        "suffixes": ["TZ", "Z", "T"]
+    },
+    
+    "worksheets": [
+        {
+            "name": "柜身板清单",
+            "type_filter": ["Panel"],
+            "category_filter": ["Board"],
+            "columns": [
+                {"key": "cabinetName", "name": "柜体名称"},
+                {"key": "cabinetNo", "name": "柜号"},
+                {"key": "partNumber", "name": "编号"},
+                {"key": "name", "name": "名称"},
+                {"key": "material", "name": "材质"},
+                {"key": "color", "name": "颜色"},
+                {"key": "length", "name": "成型长"},
+                {"key": "width", "name": "成型宽"},
+                {"key": "actualLength", "name": "开料长"},
+                {"key": "actualWidth", "name": "开料宽"},
+                {"key": "thickness", "name": "厚"},
+                {"key": "totalQty", "name": "数量"},
+                {"key": "sets", "name": "套数", "value": 1},
+                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
+                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "edgeBand", "name": "封边"},
+                {"key": "barcode", "name": "部件条码"},
+                {"key": "partNumber", "name": "板材名称"},
+                {"key": "isSpecial", "name": "是否异形"},
+                {"key": "remark", "name": "备注", "value": ""},
+                {"key": "module", "name": "下单模块"},
+                {"key": "supplier", "name": "供方处理"},
+                {"key": "supplier_code", "name": "供方编码"}
+            ]
+        },
+        {
+            "name": "免漆门板清单",
+            "type_filter": ["Panel"],
+            "category_filter": ["Door"],
+            "door_category_filter": ["免漆门板"],
+            "columns": [
+                {"key": "cabinetName", "name": "柜体名称"},
+                {"key": "cabinetNo", "name": "柜号"},
+                {"key": "partNumber", "name": "编号"},
+                {"key": "name", "name": "名称"},
+                {"key": "material", "name": "材质"},
+                {"key": "color", "name": "颜色"},
+                {"key": "length", "name": "成型长"},
+                {"key": "width", "name": "成型宽"},
+                {"key": "actualLength", "name": "开料长"},
+                {"key": "actualWidth", "name": "开料宽"},
+                {"key": "thickness", "name": "厚"},
+                {"key": "totalQty", "name": "数量"},
+                {"key": "sets", "name": "套数", "value": 1},
+                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
+                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "edgeBand", "name": "封边"},
+                {"key": "barcode", "name": "部件条码"},
+                {"key": "partNumber", "name": "板材名称"},
+                {"key": "isSpecial", "name": "是否异形"},
+                {"key": "remark", "name": "备注", "value": ""},
+                {"key": "module", "name": "下单模块"},
+                {"key": "supplier", "name": "供方处理"},
+                {"key": "supplier_code", "name": "供方编码"}
+            ]
+        },
+        {
+            "name": "油漆门板清单",
+            "type_filter": ["Panel"],
+            "category_filter": ["Door"],
+            "door_category_filter": ["烤漆门板"],
+            "columns": [
+                {"key": "cabinetName", "name": "柜体名称"},
+                {"key": "cabinetNo", "name": "柜号"},
+                {"key": "partNumber", "name": "编号"},
+                {"key": "name", "name": "名称"},
+                {"key": "material", "name": "材质"},
+                {"key": "color", "name": "颜色"},
+                {"key": "length", "name": "成型长"},
+                {"key": "width", "name": "成型宽"},
+                {"key": "actualLength", "name": "开料长"},
+                {"key": "actualWidth", "name": "开料宽"},
+                {"key": "thickness", "name": "厚"},
+                {"key": "totalQty", "name": "数量"},
+                {"key": "sets", "name": "套数", "value": 1},
+                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
+                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "edgeBand", "name": "封边"},
+                {"key": "barcode", "name": "部件条码"},
+                {"key": "partNumber", "name": "板材名称"},
+                {"key": "isSpecial", "name": "是否异形"},
+                {"key": "remark", "name": "备注", "value": ""},
+                {"key": "module", "name": "下单模块"},
+                {"key": "supplier", "name": "供方处理"},
+                {"key": "supplier_code", "name": "供方编码"}
+            ]
+        },
+        {
+            "name": "铝框门板清单",
+            "type_filter": ["Panel"],
+            "category_filter": ["Door"],
+            "door_category_filter": ["铝框门板"],
+            "columns": [
+                {"key": "cabinetName", "name": "柜体名称"},
+                {"key": "cabinetNo", "name": "柜号"},
+                {"key": "partNumber", "name": "编号"},
+                {"key": "name", "name": "名称"},
+                {"key": "material", "name": "材质"},
+                {"key": "color", "name": "颜色"},
+                {"key": "length", "name": "成型长"},
+                {"key": "width", "name": "成型宽"},
+                {"key": "actualLength", "name": "开料长"},
+                {"key": "actualWidth", "name": "开料宽"},
+                {"key": "thickness", "name": "厚"},
+                {"key": "totalQty", "name": "数量"},
+                {"key": "sets", "name": "套数", "value": 1},
+                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
+                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "edgeBand", "name": "封边"},
+                {"key": "barcode", "name": "部件条码"},
+                {"key": "partNumber", "name": "板材名称"},
+                {"key": "isSpecial", "name": "是否异形"},
+                {"key": "remark", "name": "备注", "value": ""},
+                {"key": "module", "name": "下单模块"},
+                {"key": "supplier", "name": "供方处理"},
+                {"key": "supplier_code", "name": "供方编码"}
+            ]
+        },
+        {
+            "name": "五金清单",
+            "type_filter": ["Metal", "Line", "SubTable"],
+            "columns": [
+                {"key": "cabinetName", "name": "柜体名称"},
+                {"key": "cabinetNo", "name": "柜号"},
+                {"key": "partNumber", "name": "编号"},
+                {"key": "name", "name": "名称"},
+                {"key": "color", "name": "颜色"},
+                {"key": "length", "name": "长"},
+                {"key": "width", "name": "宽"},
+                {"key": "thickness", "name": "高"},
+                {"key": "totalQty", "name": "数量"},
+                {"key": "sets", "name": "套数", "value": 1},
+                {"key": "unit", "name": "单位"},
+                {"key": "usage", "name": "用量"},
+                {"key": "quoteUnit", "name": "报价单位"},
+                {"key": "barcode", "name": "部件条码"},
+                {"key": "remark", "name": "备注", "value": ""},
+                {"key": "module", "name": "下单模块"},
+                {"key": "supplier", "name": "供方处理"},
+                {"key": "supplier_code", "name": "供方编码"}
+            ]
+        },
+        {
+            "name": "物料汇总",
+            "type_filter": ["Panel", "Metal", "Line", "SubTable"],
+            "summary": true,
+            "columns": [
+                {"key": "type", "name": "类型"},
+                {"key": "partNumber", "name": "物料编码"},
+                {"key": "name", "name": "物料名称"},
+                {"key": "doorCategory", "name": "门板分类"},
+                {"key": "usage", "name": "用量"},
+                {"key": "quoteUnit", "name": "报价单位"},
+                {"key": "color", "name": "颜色"},
+                {"key": "material", "name": "基材"},
+                {"key": "supplier", "name": "供方处理"},
+                {"key": "supplier_code", "name": "供方编码"}
+            ]
+        }
+    ],
+    
+    "door_keywords": ["门", "Door", "door", "GRD"],
+
+    "door_classification": {
+        "rules": [
+            {
+                "category": "铝框门板",
+                "conditions": [
+                    {
+                        "field": "partNumber",
+                        "prefixes": ["GRD7"]
+                    },
+                    {
+                        "field": "material",
+                        "prefixes": ["GRA"]
+                    }
+                ],
+                "logic": "OR",
+                "priority": 0
+            },
+            {
+                "category": "烤漆门板",
+                "conditions": [
+                    {
+                        "field": "material",
+                        "prefixes": ["GR51", "GR52", "GR53", "GR54"]
+                    }
+                ],
+                "logic": "AND",
+                "priority": 1
+            },
+            {
+                "category": "免漆门板",
+                "conditions": [
+                    {
+                        "field": "material",
+                        "prefixes": ["GR1", "GR2", "GR3", "GR4", "GR6", "GR8"]
+                    }
+                ],
+                "logic": "AND",
+                "priority": 2
+            }
+        ]
+    }
+}

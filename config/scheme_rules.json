@@ -1,0 +1,438 @@
+{
+    "scheme_rules": [
+        {
+            "name": "柜身方案",
+            "code": "GS",
+            "conditions": [
+                {
+                    "name": "无需加工材料除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WU'"
+                },
+                {
+                    "name": "材料外购除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WG'"
+                },
+                {
+                    "name": "产品外购除外",
+                    "expression": "[ID_SERIE [加工 \\]] <> 'WG'"
+                },
+                {
+                    "name": "特殊加工除外",
+                    "expression": "IsNullOrEmpty([Info4 [部件信息4 \\]]) / [Info4 [部件信息4 \\]] = '无'/ [Info4 [部件信息4 \\]] <> '嵌灯'"
+                },
+                {
+                    "name": "房门方案除外",
+                    "expression": "[Info1 [部件信息1 \\]] <> 'F'"
+                },
+                {
+                    "name": "圆弧方案除外",
+                    "expression": "[Info1 [部件信息1 \\]] <> 'Q'/'N'"
+                },
+                {
+                    "name": "异形板件除外",
+                    "expression": "[Info1 [部件信息3 \\]] <> '异形'"
+                },
+                {
+                    "name": "薄板方案除外",
+                    "expression": "[Thk [物品厚 \\]] > 12.0f"
+                },
+                {
+                    "name": "M005、M006门型除外",
+                    "expression": "[Info3 [部件信息3 \\]] <> 'M005' / 'M0016'/'M001b'/'M001c'"
+                }
+            ]
+        },
+        {
+            "name": "薄板方案",
+            "code": "GB",
+            "conditions": [
+                {
+                    "name": "无需加工材料除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WU'"
+                },
+                {
+                    "name": "材料外购除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WG'"
+                },
+                {
+                    "name": "产品外购除外",
+                    "expression": "[ID_SERIE [加工 \\]] <> 'WG'"
+                },
+                {
+                    "name": "特殊加工除外",
+                    "expression": "IsNullOrEmpty([Info4 [部件信息4 \\]]) / [Info4 [部件信息4 \\]] = '无'"
+                },
+                {
+                    "name": "房门方案除外",
+                    "expression": "[Info1 [部件信息1 \\]] <> 'F'"
+                },
+                {
+                    "name": "圆弧方案除外",
+                    "expression": "[Info1 [部件信息1 \\]] <> 'Q'/'N'"
+                },
+                {
+                    "name": "薄板",
+                    "expression": "[Thk [物品厚 \\]] ＜= 12.0f"
+                }
+            ]
+        },
+        {
+            "name": "特殊加工方案",
+            "code": "GYX",
+            "conditions": [
+                {
+                    "name": "无需加工材料除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WU'"
+                },
+                {
+                    "name": "材料外购除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WG'"
+                },
+                {
+                    "name": "产品外购除外",
+                    "expression": "[ID_SERIE [加工 \\]] <> 'WG'"
+                },
+                {
+                    "name": "特殊加工板件(嵌灯除外)",
+                    "expression": "Not IsNullOrEmpty([Info4 [部件信息4 \\]]) / [Info4 [部件信息4 \\]] <> '无' / [Info4 [部件信息4 \\]] <> '嵌灯'"
+                },
+                {
+                    "name": "房门方案除外",
+                    "expression": "[Info1 [部件信息1 \\]] <> 'F'"
+                },
+                {
+                    "name": "圆弧方案除外",
+                    "expression": "[Info1 [部件信息1 \\]] <> 'Q'/'N'"
+                },
+                {
+                    "name": "异形板件",
+                    "expression": "[Info1 [部件信息3 \\]] == '异形'"
+                },
+                {
+                    "name": "M005、M006门型除外",
+                    "expression": "[Info3 [部件信息3 \\]] == 'M005' / 'M0016'/'M001b'/'M001c'"
+                }
+            ]
+        },
+        {
+            "name": "圆弧方案",
+            "code": "YH",
+            "conditions": [
+                {
+                    "name": "无需加工材料除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WU'"
+                },
+                {
+                    "name": "材料外购除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WG'"
+                },
+                {
+                    "name": "产品外购除外",
+                    "expression": "[ID_SERIE [加工 \\]] <> 'WG'"
+                },
+                {
+                    "name": "圆弧方案",
+                    "expression": "[Info1 [部件信息1 \\]] == 'Q'/'N'"
+                }
+            ]
+        },
+        {
+            "name": "房门方案",
+            "code": "FM",
+            "conditions": [
+                {
+                    "name": "无需加工材料除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WU'"
+                },
+                {
+                    "name": "材料外购除外",
+                    "expression": "[MatBestellung [材料外购品项 \\]] <> 'WG'"
+                },
+                {
+                    "name": "产品外购除外",
+                    "expression": "[ID_SERIE [加工 \\]] <> 'WG'"
+                },
+                {
+                    "name": "房门方案",
+                    "expression": "[Info1 [部件信息1 \\]] == 'F'"
+                }
+            ]
+        },
+        {
+            "name": "外购方案",
+            "code": "WG",
+            "conditions": [
+                {
+                    "name": "产品外购",
+                    "expression": "[ID_SERIE [加工 \\]] == 'WG'"
+                }
+            ]
+        },
+        {
+            "name": "成品五金方案",
+            "code": "GCP",
+            "conditions": [
+                {
+                    "name": "耗品五金和标准五金",
+                    "expression": "[MatProducer] = 'H'/[MatProducer] = 'B'"
+                }
+            ]
+        },
+        {
+            "name": "加工五金",
+            "code": "GCP",
+            "conditions": [
+                {
+                    "name": "五金不输出除外",
+                    "expression": "[Unit [五金单位 \\]] <> 'WU'"
+                },
+                {
+                    "name": "加工五金和组装五金",
+                    "expression": "([MatProducer [材料供应商 \\]] = 'J'/([MatProducer [材料供应商 \\]] = 'Z'"
+                }
+            ]
+        },
+        {
+            "name": "外协方案",
+            "code": "WX",
+            "conditions": [
+                {
+                    "name": "",
+                    "expression": "ID_SERIE=WX"
+                }
+            ]
+        }
+    ],
+    "routing_rules": [
+        {
+            "work_type": "开料",
+            "work_type_condition": "物料为板件       [SysType] == 3\n材料为空除外   [MatBestellung] != 'WU'\nWCC为单部件  [MPE_TYPE] == 0",
+            "processes": [
+                {
+                    "code": "K2",
+                    "name": "雕刻机开料",
+                    "equipment": "南兴雕刻机",
+                    "description": "1、圆弧框架辅助板\n2、材料为多层板和防火板",
+                    "conditions": [
+                        {
+                            "name": "多层板和防火板材料",
+                            "expression": "[MatProducer] == 'K2 '"
+                        }
+                    ]
+                },
+                {
+                    "code": "K3",
+                    "name": "推台锯开料",
+                    "equipment": "推台锯",
+                    "description": "1、房门框架和榫条",
+                    "conditions": []
+                },
+                {
+                    "code": "K5",
+                    "name": "五金切割",
+                    "equipment": "五金切割",
+                    "description": "1、SPP 五金",
+                    "conditions": []
+                }
+            ]
+        },
+        {
+            "work_type": "封边",
+            "work_type_condition": "不封边除外       [Info2] != '0000'或 ''\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": [
+                {
+                    "code": "F2",
+                    "name": "PUR封边",
+                    "equipment": "豪迈S-2、豪迈S-3",
+                    "description": "1、激光封边除外\n2、木皮封边除外\n3、长度＞99\n4、宽度＞99\n5、厚度＞=12\n6、厚度＜=30",
+                    "conditions": [
+                        {
+                            "name": "材料为木皮除外",
+                            "expression": "[MatProducer] != 'F3 '"
+                        },
+                        {
+                            "name": "长度＞=100",
+                            "expression": "[Cleng] >=100"
+                        },
+                        {
+                            "name": "宽度＞=100",
+                            "expression": "[Cwidth] > =100"
+                        },
+                        {
+                            "name": "厚度＞=12",
+                            "expression": "[Cthk] >=12"
+                        },
+                        {
+                            "name": "厚度＜=30",
+                            "expression": "[Cthk] ＜=30"
+                        }
+                    ]
+                },
+                {
+                    "code": "F3",
+                    "name": "普通封边",
+                    "equipment": "极东J-4",
+                    "description": "木皮封边",
+                    "conditions": []
+                },
+                {
+                    "code": "F4",
+                    "name": "小板封边",
+                    "equipment": "窄条封边线",
+                    "description": "除F1、F2、F3外",
+                    "conditions": [
+                        {
+                            "name": "长度＜50或宽度＜50",
+                            "expression": "[Cleng] ＜50 OR [Cwidth] ＜ 50"
+                        },
+                        {
+                            "name": "直封边",
+                            "expression": "[Info2] !=  'B'"
+                        },
+                        {
+                            "name": "材料为木皮除外",
+                            "expression": "[MatProducer] != 'F3 '"
+                        },
+                        {
+                            "name": "长度＜100或宽度＜100",
+                            "expression": "[Cleng] ＜100 OR [Cwidth] ＜100"
+                        },
+                        {
+                            "name": "厚度＜12或厚度＞30",
+                            "expression": "[Cthk]＜12 OR [Cwidth] ＞30"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "work_type": "异形封边",
+            "work_type_condition": "不封边除外       [Info2] != '0000'或 ''\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": [
+                {
+                    "code": "F6",
+                    "name": "斜边封边",
+                    "equipment": "斜边封边机",
+                    "description": "1、带有斜封边",
+                    "conditions": []
+                }
+            ]
+        },
+        {
+            "work_type": "打孔",
+            "work_type_condition": "带程序板件      [CncBarcode1] !=''\n物料为板件       [SysType] == 3\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": [
+                {
+                    "code": "D2",
+                    "name": "异形打孔",
+                    "equipment": "豪迈V3系列、单机六面钻",
+                    "description": "1、木皮除外\n2、门板\n3、房门\n4、护墙板\n5、抽屉板\n6、异形\n7、长度＜=99或宽度＜=99\n8、双饰面\n9、切角板",
+                    "conditions": [
+                        {
+                            "name": "门板",
+                            "expression": "[Info1] == 'M'"
+                        },
+                        {
+                            "name": "房门",
+                            "expression": "[Info1] == 'F'"
+                        },
+                        {
+                            "name": "护墙板",
+                            "expression": "[Info1] == 'H'"
+                        },
+                        {
+                            "name": "异形板件",
+                            "expression": "[Ispec] != '0'"
+                        },
+                        {
+                            "name": "抽屉板",
+                            "expression": "[DetailType] ==21"
+                        },
+                        {
+                            "name": "",
+                            "expression": "[DetailType] ==22"
+                        },
+                        {
+                            "name": "长度＜=99或宽度＜=99",
+                            "expression": "[Cleng] ＜100 OR [Cwidth] ＜100"
+                        },
+                        {
+                            "name": "双饰面板",
+                            "expression": "[MatProducer] == 'D2 '"
+                        },
+                        {
+                            "name": "切角板",
+                            "expression": "[ItemDetailInformationCreateDto.ItemInfo2]== 'D2'"
+                        }
+                    ]
+                },
+                {
+                    "code": "D3",
+                    "name": "PTP打孔",
+                    "equipment": "南兴PTP",
+                    "description": "1、木皮",
+                    "conditions": []
+                }
+            ]
+        },
+        {
+            "work_type": "异形",
+            "work_type_condition": "物料为板件       [SysType] == 3\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": [
+                {
+                    "code": "Y2",
+                    "name": "手工封边",
+                    "equipment": "人工",
+                    "description": "1、异形板件封边\n2、M005门型\n3、M006门型",
+                    "conditions": []
+                },
+                {
+                    "code": "Y3",
+                    "name": "合成板件",
+                    "equipment": "人工",
+                    "description": "1、合成板件",
+                    "conditions": []
+                },
+                {
+                    "code": "Y4",
+                    "name": "组装板件",
+                    "equipment": "人工",
+                    "description": "1、需组装的五金\n2、装组装板件",
+                    "conditions": [
+                        {
+                            "name": "",
+                            "expression": "MatProducer=’Z‘"
+                        },
+                        {
+                            "name": "需组装加工五金",
+                            "expression": "[SysType] = 7"
+                        },
+                        {
+                            "name": "",
+                            "expression": "MatProducer=’Z‘"
+                        },
+                        {
+                            "name": "组装板",
+                            "expression": "[ItemDetailInformationCreateDto.ItemInfo3]== 'Y4'"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "work_type": "分拣",
+            "work_type_condition": "物料为板件       [SysType] == 3\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": []
+        },
+        {
+            "work_type": "品检",
+            "work_type_condition": "物料为板件       [SysType] == 3\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": []
+        },
+        {
+            "work_type": "包装",
+            "work_type_condition": "物料为板件       [SysType] == 3\n材料为空除外   [MatBestellung] != 'WU'",
+            "processes": []
+        }
+    ]
+}

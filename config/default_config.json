@@ -1,0 +1,10 @@
+{
+    "plan_config_code": "DEFAULT_PLAN",
+    "process_route": "DEFAULT_ROUTE",
+    "export_options": {
+        "include_header": true,
+        "auto_size_columns": true,
+        "sheet_name": "生产数据",
+        "date_format": "yyyy-MM-dd"
+    }
+}

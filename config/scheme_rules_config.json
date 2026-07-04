@@ -1,0 +1,195 @@
+{
+    "scheme_rules": [
+        {
+            "id": 1,
+            "name": "柜身方案",
+            "code": "GS",
+            "type_code": "cg_sc",
+            "rank_num": 1,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WU'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[ID_SERIE [加工 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"IsNullOrEmpty([Info4 [部件信息4 \\\\]]) / [Info4 [部件信息4 \\\\]] = '无'/ [Info4 [部件信息4 \\\\]] <> '嵌灯'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] <> 'F'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] <> 'Q'/'N'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息3 \\\\]] <> '异形'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Thk [物品厚 \\\\]] > 12.0f\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info3 [部件信息3 \\\\]] <> 'M005' / 'M0016'/'M001b'/'M001c'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 2,
+            "name": "薄板方案",
+            "code": "GB",
+            "type_code": "cg_sc",
+            "rank_num": 2,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WU'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[ID_SERIE [加工 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"IsNullOrEmpty([Info4 [部件信息4 \\\\]]) / [Info4 [部件信息4 \\\\]] = '无'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] <> 'F'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] <> 'Q'/'N'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Thk [物品厚 \\\\]] ＜= 12.0f\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 3,
+            "name": "特殊加工方案",
+            "code": "GYX",
+            "type_code": "cg_sc",
+            "rank_num": 3,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WU'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[ID_SERIE [加工 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"Not IsNullOrEmpty([Info4 [部件信息4 \\\\]]) / [Info4 [部件信息4 \\\\]] <> '无' / [Info4 [部件信息4 \\\\]] <> '嵌灯'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] <> 'F'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] <> 'Q'/'N'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息3 \\\\]] == '异形'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info3 [部件信息3 \\\\]] == 'M005' / 'M0016'/'M001b'/'M001c'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 4,
+            "name": "圆弧方案",
+            "code": "YH",
+            "type_code": "cg_sc",
+            "rank_num": 4,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WU'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[ID_SERIE [加工 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] == 'Q'/'N'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 5,
+            "name": "房门方案",
+            "code": "FM",
+            "type_code": "cg_sc",
+            "rank_num": 5,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WU'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[MatBestellung [材料外购品项 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[ID_SERIE [加工 \\\\]] <> 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Info1 [部件信息1 \\\\]] == 'F'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 6,
+            "name": "外购方案",
+            "code": "WG",
+            "type_code": "cg_sc",
+            "rank_num": 6,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[ID_SERIE [加工 \\\\]] == 'WG'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 7,
+            "name": "成品五金方案",
+            "code": "GCP",
+            "type_code": "cg_sc",
+            "rank_num": 7,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"MatProducer\", \"operator\": \"EQUAL\", \"value\": \"H\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 8,
+            "name": "加工五金",
+            "code": "GCP",
+            "type_code": "cg_sc",
+            "rank_num": 8,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[Unit [五金单位 \\\\]] <> 'WU'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"([MatProducer [材料供应商 \\\\]] = 'J'/([MatProducer [材料供应商 \\\\]] = 'Z'\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 9,
+            "name": "外协方案",
+            "code": "WX",
+            "type_code": "cg_sc",
+            "rank_num": 9,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"ID_SERIE=WX\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        }
+    ],
+    "routing_rules": [
+        {
+            "id": 1,
+            "name": "开料-雕刻机开料",
+            "code": "K2",
+            "type_code": "cg_gylx",
+            "rank_num": 1,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"MatProducer\", \"operator\": \"EQUAL\", \"value\": \"K2 \", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 2,
+            "name": "开料-推台锯开料",
+            "code": "K3",
+            "type_code": "cg_gylx",
+            "rank_num": 2,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 3,
+            "name": "开料-五金切割",
+            "code": "K5",
+            "type_code": "cg_gylx",
+            "rank_num": 3,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 4,
+            "name": "封边-PUR封边",
+            "code": "F2",
+            "type_code": "cg_gylx",
+            "rank_num": 4,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"MatProducer\", \"operator\": \"NOT_EQUAL\", \"value\": \"F3 \", \"condition\": \"and\"}, {\"key\": \"Cleng\", \"operator\": \"GREATER_THAN_OR_EQUAL\", \"value\": \"100\", \"condition\": \"and\"}, {\"key\": \"[Cwidth] > =100\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"Cthk\", \"operator\": \"GREATER_THAN_OR_EQUAL\", \"value\": \"12\", \"condition\": \"and\"}, {\"key\": \"[Cthk] ＜=30\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 5,
+            "name": "封边-普通封边",
+            "code": "F3",
+            "type_code": "cg_gylx",
+            "rank_num": 5,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 6,
+            "name": "封边-小板封边",
+            "code": "F4",
+            "type_code": "cg_gylx",
+            "rank_num": 6,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"[Cleng] ＜50 OR [Cwidth] ＜ 50\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"Info2\", \"operator\": \"NOT_EQUAL\", \"value\": \"B\", \"condition\": \"and\"}, {\"key\": \"MatProducer\", \"operator\": \"NOT_EQUAL\", \"value\": \"F3 \", \"condition\": \"and\"}, {\"key\": \"[Cleng] ＜100 OR [Cwidth] ＜100\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Cthk]＜12 OR [Cwidth] ＞30\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 7,
+            "name": "异形封边-斜边封边",
+            "code": "F6",
+            "type_code": "cg_gylx",
+            "rank_num": 7,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 8,
+            "name": "打孔-异形打孔",
+            "code": "D2",
+            "type_code": "cg_gylx",
+            "rank_num": 8,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"Info1\", \"operator\": \"EQUAL\", \"value\": \"M\", \"condition\": \"and\"}, {\"key\": \"Info1\", \"operator\": \"EQUAL\", \"value\": \"F\", \"condition\": \"and\"}, {\"key\": \"Info1\", \"operator\": \"EQUAL\", \"value\": \"H\", \"condition\": \"and\"}, {\"key\": \"Ispec\", \"operator\": \"NOT_EQUAL\", \"value\": \"0\", \"condition\": \"and\"}, {\"key\": \"[DetailType] ==21\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[DetailType] ==22\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[Cleng] ＜100 OR [Cwidth] ＜100\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"MatProducer\", \"operator\": \"EQUAL\", \"value\": \"D2 \", \"condition\": \"and\"}, {\"key\": \"ItemDetailInformationCreateDto\", \"operator\": \"EQUAL\", \"value\": \"D2\", \"condition\": \"and\"}]"
+        },
+        {
+            "id": 9,
+            "name": "打孔-PTP打孔",
+            "code": "D3",
+            "type_code": "cg_gylx",
+            "rank_num": 9,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 10,
+            "name": "异形-手工封边",
+            "code": "Y2",
+            "type_code": "cg_gylx",
+            "rank_num": 10,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 11,
+            "name": "异形-合成板件",
+            "code": "Y3",
+            "type_code": "cg_gylx",
+            "rank_num": 11,
+            "is_enable": 1,
+            "rule_json": "[]"
+        },
+        {
+            "id": 12,
+            "name": "异形-组装板件",
+            "code": "Y4",
+            "type_code": "cg_gylx",
+            "rank_num": 12,
+            "is_enable": 1,
+            "rule_json": "[{\"key\": \"MatProducer=’Z‘\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"[SysType] = 7\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"MatProducer=’Z‘\", \"operator\": \"EQUAL\", \"value\": \"\", \"condition\": \"and\"}, {\"key\": \"ItemDetailInformationCreateDto\", \"operator\": \"EQUAL\", \"value\": \"Y4\", \"condition\": \"and\"}]"
+        }
+    ]
+}

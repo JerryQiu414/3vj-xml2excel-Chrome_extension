@@ -1,0 +1,311 @@
+{
+    "process_steps": [
+        {
+            "name": "开料",
+            "code_prefix": "K",
+            "conditions": [
+                {
+                    "code": "K1",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "F4SOSB"},
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "JKSMKLB"},
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "MDF"},
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "LSBDXPHB"},
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "F4SSMKLB"},
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "E0ZXB"}
+                    ],
+                    "logic": "OR"
+                },
+                {
+                    "code": "K2",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "F4SOSB"},
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "JKSMKLB"},
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "MDF"},
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "LSBDXPHB"},
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "F4SSMKLB"},
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "E0ZXB"}
+                    ],
+                    "logic": "AND",
+                    "description": "圆弧框架辅助板"
+                },
+                {
+                    "code": "K3",
+                    "target_types": ["Panel"],
+                    "rules": [],
+                    "description": "房门框架和榫条"
+                },
+                {
+                    "code": "K5",
+                    "target_types": ["Metal", "Line"],
+                    "rules": [
+                        {"field": "PartNumber", "operator": "contains", "value": "GRHF0200002"},
+                        {"field": "PartNumber", "operator": "contains", "value": "GRHF0200001"},
+                        {"field": "WJFA", "operator": "equals", "value": "JG"},
+                        {"field": "PartNumber", "operator": "contains", "value": "GRHA0100028"},
+                        {"field": "subType", "operator": "equals", "value": "GolaProfile"},
+                        {"field": "subType", "operator": "equals", "value": "straightener"}
+                    ],
+                    "logic": "OR"
+                }
+            ],
+            "prerequisites": [
+                {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""}
+            ],
+            "prerequisite_types": ["Panel"]
+        },
+        {
+            "name": "封边",
+            "code_prefix": "F",
+            "conditions": [
+                {
+                    "code": "F1",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "EdgeThickCodeNo", "operator": "startswith", "value": "FBJG"},
+                        {"field": "Length", "operator": "greater_or_equal", "value": 50},
+                        {"field": "Width", "operator": "greater_or_equal", "value": 50},
+                        {"field": "Thickness", "operator": "greater_or_equal", "value": 12},
+                        {"field": "Thickness", "operator": "less_or_equal", "value": 30}
+                    ],
+                    "logic": "AND"
+                },
+                {
+                    "code": "F2",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "EdgeThickCodeNo", "operator": "startswith", "value": "FBABS"},
+                        {"field": "Length", "operator": "greater_or_equal", "value": 100},
+                        {"field": "Width", "operator": "greater_or_equal", "value": 100},
+                        {"field": "Thickness", "operator": "greater_or_equal", "value": 12},
+                        {"field": "Thickness", "operator": "less_or_equal", "value": 30}
+                    ],
+                    "logic": "AND"
+                },
+                {
+                    "code": "F3",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "EdgeThickCodeNo", "operator": "startswith", "value": "FBMP"}
+                    ],
+                    "logic": "AND"
+                },
+                {
+                    "code": "F4",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "EdgeGroup.Edge.EdgeType", "operator": "any_not_equals", "value": "N"}
+                    ],
+                    "logic": "AND",
+                    "description": "除F1、F2、F3、F5、F6外，且至少有一条边不是N"
+                }
+            ],
+            "prerequisites": [
+                {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""},
+                {"field": "EdgeGroup.Edge.EdgeType", "operator": "any_not_equals", "value": "N"},
+                {"field": "EdgeThickType", "operator": "not_in", "value": ["无封边", "null", "Null", "NULL"]}
+            ],
+            "prerequisite_types": ["Panel"]
+        },
+        {
+            "name": "异形封边",
+            "code_prefix": "F",
+            "conditions": [
+                {
+                    "code": "F5",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "ProduceValues.TSFB", "operator": "equals", "value": "J"},
+                        {"field": "ProduceValues.TSFB", "operator": "equals", "value": "C"},
+                        {"field": "ProduceValues.TSFB", "operator": "equals", "value": "L"}
+                    ],
+                    "logic": "OR"
+                },
+                {
+                    "code": "F6",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "ProduceValues.TSFB", "operator": "equals", "value": "X"}
+                    ],
+                    "logic": "AND"
+                }
+            ],
+            "prerequisites": [
+                {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""},
+                {"field": "EdgeThickType", "operator": "not_in", "value": ["无封边", "null", "Null", "NULL"]}
+            ],
+            "prerequisite_types": ["Panel"]
+        },
+        {
+            "name": "打孔",
+            "code_prefix": "D",
+            "conditions": [
+                {
+                    "code": "D1",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "BasicMaterialXCode", "operator": "not_startswith", "value": "MP"},
+                        {"field": "CabinetType", "operator": "not_equals", "value": "swingDoorLeafEntity"},
+                        {"field": "StandardCategory", "operator": "not_equals", "value": "CTBB"},
+                        {"field": "StandardCategory", "operator": "not_equals", "value": "CTDIB"},
+                        {"field": "StandardCategory", "operator": "not_equals", "value": "CTZCB"},
+                        {"field": "StandardCategory", "operator": "not_equals", "value": "CTYCB"},
+                        {"field": "IsAccurate", "operator": "equals", "value": 0},
+                        {"field": "Material", "operator": "not_contains", "value": "GR2"},
+                        {"field": "Material", "operator": "not_contains", "value": "GR4"},
+                        {"field": "Material", "operator": "not_contains", "value": "GR5"},
+                        {"field": "Material", "operator": "not_contains", "value": "GR6"},
+                        {"field": "Material", "operator": "not_contains", "value": "GR8"},
+                        {"field": "Material", "operator": "not_contains", "value": "GR3006"},
+                        {"field": "Material", "operator": "not_contains", "value": "GR3007"},
+                        {"field": "Length", "operator": "greater_than", "value": 99},
+                        {"field": "Width", "operator": "greater_than", "value": 99}
+                    ],
+                    "logic": "AND"
+                },
+                {
+                    "code": "D2",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "MP"},
+                        {"field": "CabinetType", "operator": "equals", "value": "swingDoorLeafEntity"},
+                        {"field": "StandardCategory", "operator": "equals", "value": "CTBB"},
+                        {"field": "StandardCategory", "operator": "equals", "value": "CTDIB"},
+                        {"field": "StandardCategory", "operator": "equals", "value": "CTZCB"},
+                        {"field": "StandardCategory", "operator": "equals", "value": "CTYCB"},
+                        {"field": "IsAccurate", "operator": "equals", "value": 1},
+                        {"field": "Length", "operator": "less_or_equal", "value": 99},
+                        {"field": "Width", "operator": "less_or_equal", "value": 99},
+                        {"field": "Material", "operator": "contains", "value": "GR2"},
+                        {"field": "Material", "operator": "contains", "value": "GR3006"},
+                        {"field": "Material", "operator": "contains", "value": "GR3007"},
+                        {"field": "Material", "operator": "contains", "value": "GR4"},
+                        {"field": "Material", "operator": "contains", "value": "GR5"},
+                        {"field": "Material", "operator": "contains", "value": "GR6"},
+                        {"field": "Material", "operator": "contains", "value": "GR8"}
+                    ],
+                    "logic": "OR"
+                },
+                {
+                    "code": "D3",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "BasicMaterialXCode", "operator": "startswith", "value": "MP"}
+                    ],
+                    "logic": "AND"
+                }
+            ],
+            "prerequisites": [
+                {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""},
+                {"field": "Machines.Machining", "operator": "not_empty", "value": ""}
+            ],
+            "prerequisite_types": ["Panel"]
+        },
+        {
+            "name": "异形",
+            "code_prefix": "Y",
+            "conditions": [
+                {
+                    "code": "Y4",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "Machines.Machining.ToolMark", "operator": "equals", "value": "LSXX"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "equals", "value": "DTKC"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "equals", "value": "LZQ"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "equals", "value": "TQWG"}
+                    ],
+                    "logic": "OR"
+                },
+                {
+                    "code": "Y2",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "Machines.Machining.GrooveType", "operator": "equals", "value": 1},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "LSXX"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "DTKC"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "LZQ"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "TQWG"}
+                    ],
+                    "logic": "AND"
+                },
+                {
+                    "code": "Y2",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "Machines.Machining.GrooveType", "operator": "equals", "value": 0},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "LSXX"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "DTKC"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "LZQ"},
+                        {"field": "Machines.Machining.ToolMark", "operator": "not_equals", "value": "TQWG"}
+                    ],
+                    "logic": "AND"
+                },
+                {
+                    "code": "Y3",
+                    "target_types": ["Panel"],
+                    "rules": [
+                        {"field": "ProduceValues.info3", "operator": "equals", "value": "M"}
+                    ],
+                    "logic": "AND"
+                }
+            ],
+            "prerequisites": [
+                {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""}
+            ],
+            "prerequisite_types": ["Panel"]
+        },
+        {
+            "name": "分拣",
+            "code_prefix": "CI",
+            "conditions": [
+                {
+                    "code": "CI",
+                    "target_types": ["Panel", "Metal", "Line", "SubTable"],
+                    "rules": [
+                        {"field": "ProduceValues.info3", "operator": "equals", "value": ""},
+                        {"field": "ProduceValues.info3", "operator": "not_equals", "value": "Z"}
+                    ],
+                    "logic": "OR"
+                }
+            ],
+            "prerequisites": [],
+            "prerequisite_types": []
+        },
+        {
+            "name": "品检",
+            "code_prefix": "QC",
+            "conditions": [
+                {
+                    "code": "QC",
+                    "target_types": ["Panel", "Metal", "Line", "SubTable"],
+                    "rules": [
+                        {"field": "ProduceValues.info3", "operator": "equals", "value": ""},
+                        {"field": "ProduceValues.info3", "operator": "not_equals", "value": "Z"}
+                    ],
+                    "logic": "OR"
+                }
+            ],
+            "prerequisites": [],
+            "prerequisite_types": []
+        },
+        {
+            "name": "包装",
+            "code_prefix": "B",
+            "conditions": [
+                {
+                    "code": "B",
+                    "target_types": ["Panel", "Metal", "Line", "SubTable"],
+                    "rules": [
+                        {"field": "ProduceValues.info3", "operator": "equals", "value": ""},
+                        {"field": "ProduceValues.info3", "operator": "not_equals", "value": "Z"}
+                    ],
+                    "logic": "OR"
+                }
+            ],
+            "prerequisites": [],
+            "prerequisite_types": []
+        }
+    ]
+}

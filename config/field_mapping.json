@@ -1,0 +1,472 @@
+{
+    "row_data_sources": {
+        "Panel": ".//Cabinet//Panel",
+        "Metal": ".//Cabinet/Metals/Metal",
+        "Line": ".//baseLine/lines/Line",
+        "SubTable": ".//tables/table/TableBoard/Table/SubTable"
+    },
+    "parent_data_sources": {
+        "Panel": ".//Cabinet",
+        "Metal": ".//Cabinet",
+        "Line": ".//baseLine",
+        "SubTable": ".//tables/table/TableBoard/Table"
+    },
+    "order_info_source": ".//Cabinet[1]",
+    "columns": [
+        {
+            "column_letter": "A",
+            "data_type": "string",
+            "mapping": "order_info.OrderNo",
+            "name": "订单号"
+        },
+        {
+            "column_letter": "B",
+            "data_type": "string",
+            "mapping": "order_info.Customer",
+            "name": "客户"
+        },
+        {
+            "column_letter": "C",
+            "data_type": "date",
+            "mapping": "order_info.DeliveryDate",
+            "name": "交货日期"
+        },
+        {
+            "column_letter": "D",
+            "data_type": "number",
+            "default_value": 1,
+            "mapping": "order_info.OrderCount",
+            "name": "订单套数"
+        },
+        {
+            "column_letter": "E",
+            "data_type": "string",
+            "mapping": "parent.Name",
+            "name": "单元柜名称",
+            "type_mappings": {
+                "Line": "row.name",
+                "Metal": "parent.Name",
+                "Panel": "parent.Name",
+                "SubTable": "parent.name"
+            }
+        },
+        {
+            "column_letter": "F",
+            "custom_code": "if (row_type === 'Panel' || row_type === 'Metal') {\n    var craft_mark = (parent_data.CraftMark || '').trim();\n    if (craft_mark) {\n        return craft_mark;\n    }\n    return parent_data.Name;\n} else if (row_type === 'Line') {\n    return row_data.name;\n} else if (row_type === 'SubTable') {\n    return parent_data.name;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "单元柜描述"
+        },
+        {
+            "column_letter": "G",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "parent.Height",
+            "name": "高",
+            "type_mappings": {
+                "Line": "row.depth",
+                "Metal": "parent.Height",
+                "Panel": "parent.Height",
+                "SubTable": "parent.height"
+            }
+        },
+        {
+            "column_letter": "H",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "parent.Length",
+            "name": "宽",
+            "type_mappings": {
+                "Line": "row.width",
+                "Metal": "parent.Length",
+                "Panel": "parent.Length",
+                "SubTable": "parent.width"
+            }
+        },
+        {
+            "column_letter": "I",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "parent.Width",
+            "name": "深",
+            "type_mappings": {
+                "Line": "row.height",
+                "Metal": "parent.Width",
+                "Panel": "parent.Width",
+                "SubTable": "parent.depth"
+            }
+        },
+        {
+            "column_letter": "J",
+            "custom_code": "if (row_type === 'Panel') {\n    var cabinet_panel_no = row_data.CabinetPanelNo;\n    if (cabinet_panel_no) {\n        var parts = cabinet_panel_no.split('-');\n        if (parts.length > 0) {\n            return parts[0];\n        }\n    }\n    return parent_data.CabinetNo;\n} else if (row_type === 'Metal') {\n    var cabinet_no = parent_data.CabinetNo;\n    if (cabinet_no && cabinet_no.includes(';')) {\n        var parts = cabinet_no.split(';');\n        if (parts.length > 0) {\n            return parts[0].trim();\n        }\n    }\n    return cabinet_no;\n} else if (row_type === 'Line') {\n    return 'LINE_TEMP';\n} else if (row_type === 'SubTable') {\n    return 'SUBTABLE_TEMP';\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "分柜号"
+        },
+        {
+            "column_letter": "K",
+            "data_type": "string",
+            "mapping": "row.PartNumber",
+            "name": "单个部件名称",
+            "type_mappings": {
+                "Line": "row.partNumber",
+                "Metal": "row.PartNumber",
+                "Panel": "row.PartNumber",
+                "SubTable": "parent.partNumber"
+            }
+        },
+        {
+            "column_letter": "L",
+            "data_type": "string",
+            "mapping": "row.Name",
+            "name": "部件名称",
+            "type_mappings": {
+                "Line": "row.name",
+                "Metal": "row.Name",
+                "Panel": "row.Name",
+                "SubTable": "parent.name"
+            }
+        },
+        {
+            "column_letter": "M",
+            "custom_code": "row_type === 'Panel' ? '3' : '8'",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "系统类型"
+        },
+        {
+            "column_letter": "N",
+            "custom_code": "if (row_type === 'Panel') {\n    var produce_values = row_data.ProduceValues || {};\n    if (typeof produce_values === 'object' && produce_values !== null && 'ActualLength1' in produce_values) {\n        return produce_values.ActualLength1;\n    }\n    return row_data.ActualLength2 || row_data.ActualLength || row_data.Length;\n} else if (row_type === 'Metal') {\n    return row_data.length;\n} else if (row_type === 'Line') {\n    return row_data.width;\n} else if (row_type === 'SubTable') {\n    return row_data.width;\n}\nreturn ''",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "custom_code",
+            "name": "开料长"
+        },
+        {
+            "column_letter": "O",
+            "custom_code": "if (row_type === 'Panel') {\n    var produce_values = row_data.ProduceValues || {};\n    if (typeof produce_values === 'object' && produce_values !== null && 'ActualWidth1' in produce_values) {\n        return produce_values.ActualWidth1;\n    }\n    return row_data.ActualWidth2 || row_data.ActualWidth || row_data.Width;\n} else if (row_type === 'Metal') {\n    return row_data.width;\n} else if (row_type === 'Line') {\n    return row_data.depth;\n} else if (row_type === 'SubTable') {\n    return row_data.depth;\n}\nreturn ''",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "custom_code",
+            "name": "开料宽"
+        },
+        {
+            "column_letter": "P",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "row.Thickness",
+            "name": "开料厚",
+            "type_mappings": {
+                "Line": "row.height",
+                "Metal": "row.height",
+                "Panel": "row.Thickness",
+                "SubTable": "parent.height"
+            }
+        },
+        {
+            "column_letter": "Q",
+            "custom_code": "if (row_type === 'Panel') {\n    return (row_data.Material || '') + '+' + (row_data.BasicMaterial || '');\n} else if (row_type === 'Metal') {\n    return '';\n} else if (row_type === 'Line') {\n    return row_data.materialName;\n} else if (row_type === 'SubTable') {\n    return (parent_data.materialName || '') + '+' + (parent_data.materialCategoryName || '');\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "材料描述1"
+        },
+        {
+            "column_letter": "R",
+            "custom_code": "row_type === 'Panel' ? row_data.BasicMaterialMCode : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "材质WCC名称"
+        },
+        {
+            "column_letter": "S",
+            "custom_code": "var grain = row_data.Grain || row_data.TextureDirection || row_data.textureDirection || row_data.grain || parent_data.Grain || parent_data.TextureDirection || parent_data.textureDirection || parent_data.grain || 'N';\nif (grain === 'N') return 0;\nif (grain === 'H') return 2;\nif (grain === 'V') return 1;\nreturn 0;",
+            "data_type": "number",
+            "mapping": "custom_code",
+            "name": "材料纹理"
+        },
+        {
+            "column_letter": "T",
+            "custom_code": "if (row_type === 'Panel') {\n    return row_data.Length;\n} else if (row_type === 'Metal') {\n    return row_data.length;\n} else if (row_type === 'Line') {\n    return row_data.width;\n} else if (row_type === 'SubTable') {\n    return row_data.width;\n}\nreturn ''",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "custom_code",
+            "name": "完工长"
+        },
+        {
+            "column_letter": "U",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "row.Width",
+            "name": "完工宽",
+            "type_mappings": {
+                "Line": "row.height",
+                "Metal": "row.width",
+                "Panel": "row.Width",
+                "SubTable": "row.depth"
+            }
+        },
+        {
+            "column_letter": "V",
+            "data_type": "number",
+            "decimal_places": 2,
+            "mapping": "row.Thickness",
+            "name": "完工厚",
+            "type_mappings": {
+                "Line": "row.depth",
+                "Metal": "row.height",
+                "Panel": "row.Thickness",
+                "SubTable": "parent.height"
+            }
+        },
+        {
+            "column_letter": "W",
+            "custom_code": "['Panel', 'Line', 'SubTable'].includes(row_type) ? 1 : parseInt(row_data.Num || 1, 10)",
+            "data_type": "number",
+            "mapping": "custom_code",
+            "name": "数量"
+        },
+        {
+            "column_letter": "X",
+            "data_type": "string",
+            "mapping": "plan_matcher",
+            "name": "方案配置编码"
+        },
+        {
+            "column_letter": "Y",
+            "data_type": "string",
+            "mapping": "row.ID",
+            "name": "条形码",
+            "type_mappings": {
+                "Line": "row.Id",
+                "Metal": "row.Id",
+                "Panel": "row.ID",
+                "SubTable": "parent.Id"
+            }
+        },
+        {
+            "column_letter": "Z",
+            "custom_code": "if (row_type === 'Panel') {\n    var machines = row_data.Machines || {};\n    if (typeof machines === 'object' && machines !== null && 'Machining' in machines && machines.Machining) {\n        return row_data.ID;\n    }\n    return '';\n} else if (row_type === 'Metal') {\n    return '';\n} else if (row_type === 'Line') {\n    return '';\n} else if (row_type === 'SubTable') {\n    return '';\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "正面条码"
+        },
+        {
+            "column_letter": "AA",
+            "custom_code": "if (row_type === 'Line') {\n    return '';\n}\nvar has_face5 = false;\nvar has_face6 = false;\nif (row_element) {\n    var machinings = row_element.querySelectorAll('.//Machining');\n    for (var i = 0; i < machinings.length; i++) {\n        var face = machinings[i].getAttribute('Face');\n        if (face === '5') has_face5 = true;\n        if (face === '6') has_face6 = true;\n    }\n}\nif (has_face5 && has_face6) {\n    var original_id = row_data.ID;\n    if (original_id && original_id.length >= 17) {\n        return original_id.substring(0, 16) + '2' + original_id.substring(17);\n    }\n    return original_id;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "反面条码"
+        },
+        {
+            "column_letter": "AB",
+            "data_type": "string",
+            "description": "根据数据动态匹配工艺路线",
+            "mapping": "route_matcher",
+            "name": "工艺路线"
+        },
+        {
+            "column_letter": "AC",
+            "custom_code": "row_type === 'Panel' ? row_data.EdgeThickName : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边1WCC名称"
+        },
+        {
+            "column_letter": "AD",
+            "custom_code": "row_type === 'Panel' ? row_data.EdgeThickName : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边2WCC名称"
+        },
+        {
+            "column_letter": "AE",
+            "custom_code": "row_type === 'Panel' ? row_data.EdgeThickName : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边3WCC名称"
+        },
+        {
+            "column_letter": "AF",
+            "custom_code": "row_type === 'Panel' ? row_data.EdgeThickName : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边4WCC名称"
+        },
+        {
+            "column_letter": "AG",
+            "custom_code": "",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边1厚度"
+        },
+        {
+            "column_letter": "AH",
+            "custom_code": "",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边2厚度"
+        },
+        {
+            "column_letter": "AI",
+            "custom_code": "",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边3厚度"
+        },
+        {
+            "column_letter": "AJ",
+            "custom_code": "",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "封边4厚度"
+        },
+        {
+            "column_letter": "AK",
+            "custom_code": "row_type === 'Panel' ? row_data.BasicMaterialMCode : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "材料描述2"
+        },
+        {
+            "column_letter": "AL",
+            "custom_code": "row_type === 'Panel' ? 'GS' : ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "包装方案"
+        },
+        {
+            "column_letter": "AM",
+            "custom_code": "if (row_type === 'Metal') {\n    return row_data.PartNumber;\n} else if (row_type === 'Line') {\n    return row_data.partNumber;\n} else if (row_type === 'SubTable') {\n    return parent_data.partNumber;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "五金ID"
+        },
+        {
+            "column_letter": "AN",
+            "custom_code": "if (row_type === 'Panel') {\n    var produce_values = row_data.ProduceValues || {};\n    return produce_values.info1;\n} else if (row_type === 'Metal') {\n    return row_data.info1;\n} else if (row_type === 'Line') {\n    return row_data.info1;\n} else if (row_type === 'SubTable') {\n    return parent_data.info1;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "信息1"
+        },
+        {
+            "column_letter": "AO",
+            "custom_code": "if (row_type === 'Panel') {\n    var produce_values = row_data.ProduceValues || {};\n    return produce_values.info2;\n} else if (row_type === 'Metal') {\n    return row_data.info2;\n} else if (row_type === 'Line') {\n    return row_data.info2;\n} else if (row_type === 'SubTable') {\n    return parent_data.info2;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "信息2"
+        },
+        {
+            "column_letter": "AP",
+            "custom_code": "if (row_type === 'Panel') {\n    var produce_values = row_data.ProduceValues || {};\n    return produce_values.info3;\n} else if (row_type === 'Metal') {\n    return row_data.info3;\n} else if (row_type === 'Line') {\n    return row_data.info3;\n} else if (row_type === 'SubTable') {\n    return parent_data.info3;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "信息3"
+        },
+        {
+            "column_letter": "AQ",
+            "custom_code": "if (row_type === 'Panel') {\n    var produce_values = row_data.ProduceValues || {};\n    return produce_values.info4;\n} else if (row_type === 'Metal') {\n    return row_data.info4;\n} else if (row_type === 'Line') {\n    return row_data.info4;\n} else if (row_type === 'SubTable') {\n    return parent_data.info4;\n}\nreturn ''",
+            "data_type": "string",
+            "mapping": "custom_code",
+            "name": "信息4"
+        }
+    ],
+    "execute_modes": {
+        "async": {
+            "description": "全部数据输出后批量执行",
+            "name": "异步执行"
+        },
+        "sync": {
+            "description": "每条数据输出时立即执行",
+            "name": "同步执行"
+        }
+    },
+    "post_process_rules": {
+        "Metal数据合并": {
+            "custom_script": "",
+            "enabled": true,
+            "execute_mode": "sync",
+            "hardware_type_value": "hardware",
+            "priority": 5,
+            "remove_suffixes": [
+                "TZ",
+                "Z",
+                "T"
+            ],
+            "require_hardware_type": true,
+            "require_unit_transfer": true,
+            "rule_type": "metal_merge",
+            "unit_transfer_value": "1"
+        },
+        "特殊加工五金系统类型修改": {
+            "enabled": true,
+            "execute_mode": "sync",
+            "match_patterns": [
+                "GRHH0300001",
+                "GRHH0300002",
+                "GRHH0300003",
+                "GRHH0300004",
+                "GRHF0300007",
+                "GRHA0100042",
+                "GRHD5100011",
+                "GRHA0100028"
+            ],
+            "match_type": "contains",
+            "new_value": "7",
+            "original_value": "8",
+            "priority": 15,
+            "rule_type": "conditional_replace",
+            "source_column": "K",
+            "target_column": "M"
+        },
+        "空的编码改为null": {
+            "column_letter": "AA",
+            "default_value": "null",
+            "enabled": true,
+            "execute_mode": "sync",
+            "priority": 20,
+            "rule_type": "empty_replace"
+        },
+        "自备五金后缀去除": {
+            "column_letters": [
+                "K",
+                "L",
+                "AM"
+            ],
+            "enabled": true,
+            "execute_mode": "sync",
+            "priority": 10,
+            "rule_type": "suffix_remove",
+            "suffixes_to_remove": [
+                "TZ",
+                "Z",
+                "T"
+            ]
+        }
+    },
+    "rule_types": {
+        "conditional_replace": {
+            "description": "根据指定列的条件替换目标列的值",
+            "name": "条件替换"
+        },
+        "custom_script": {
+            "description": "执行自定义Python脚本",
+            "name": "自定义脚本"
+        },
+        "empty_replace": {
+            "description": "将空值替换为指定默认值",
+            "name": "判空处理"
+        },
+        "metal_merge": {
+            "description": "合并相同PartNumber的Metal数据",
+            "name": "Metal合并"
+        },
+        "sort": {
+            "description": "按照指定列进行排序",
+            "name": "排序功能"
+        },
+        "suffix_remove": {
+            "description": "移除指定列数据的后缀",
+            "name": "数据修改"
+        }
+    }
+}

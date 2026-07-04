@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML转EXCEL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            width: 400px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+        
+        .upload-zone:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+        }
+        
+        .upload-zone.has-file {
+            border-color: #11998e;
+            background: #d4edda;
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .file-info {
+            display: none;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .file-info.show {
+            display: block;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .conversion-options {
+            margin-bottom: 20px;
+        }
+        
+        .conversion-options label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .option-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .option-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+        
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+        }
+        
+        .option-btn .icon {
+            font-size: 24px;
+        }
+        
+        .option-btn .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .option-btn .desc {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .status-bar {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .status-bar.show {
+            display: block;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-processing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 XML转EXCEL</h1>
+            <p>三维家XML转换工具 - BOM/FMS</p>
+        </div>
+        
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon">📂</div>
+            <div class="upload-text">点击上传XML文件</div>
+        </div>
+        
+        <input type="file" id="fileInput" accept=".xml">
+        
+        <div class="file-info" id="fileInfo">
+            <div class="file-name" id="fileName"></div>
+        </div>
+        
+        <div class="conversion-options">
+            <label>选择转换类型:</label>
+            <div class="option-group">
+                <div class="option-btn selected" id="optFms">
+                    <div class="icon">📈</div>
+                    <div class="name">FMS转换</div>
+                    <div class="desc">生产数据转换</div>
+                </div>
+                <div class="option-btn" id="optBom">
+                    <div class="icon">📦</div>
+                    <div class="name">BOM转换</div>
+                    <div class="desc">物料清单转换</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="convertBtn" disabled>
+                <span id="convertBtnText">🚀 开始转换</span>
+                <span id="convertBtnLoader" style="display:none;" class="loading-spinner"></span>
+            </button>
+        </div>
+        
+        <div class="status-bar" id="statusBar"></div>
+        
+        <div class="stats-container" id="statsContainer" style="display:none;">
+            <div class="stat-item">
+                <div class="stat-number" id="totalRows">0</div>
+                <div class="stat-label">总行数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="panelCount">0</div>
+                <div class="stat-label">板件</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="metalCount">0</div>
+                <div class="stat-label">五金</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="lineCount">0</div>
+                <div class="stat-label">线条</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lib/xlsx.full.min.js"></script>
+    <script src="lib/jszip.min.js"></script>
+    <script src="js/xml-parser.js"></script>
+    <script src="js/plan-matcher.js"></script>
+    <script src="js/route-matcher.js"></script>
+    <script src="js/field-mapper.js"></script>
+    <script src="js/fms-converter.js"></script>
+    <script src="js/bom-converter.js"></script>
+    <script src="js/excel-exporter.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

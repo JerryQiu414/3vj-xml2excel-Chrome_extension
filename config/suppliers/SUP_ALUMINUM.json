@@ -1,0 +1,122 @@
+{
+    "supplier_id": "SUP_ALUMINUM",
+    "supplier_name": "铝材供应商",
+    "description": "铝框、铝踢脚板等铝材类物料采购表单",
+    "excel_config": {
+        "sheet_name": "铝材采购单",
+        "include_header": true,
+        "date_format": "yyyy-MM-dd",
+        "auto_size_columns": true,
+        "freeze_header": true
+    },
+    "columns": [
+        {
+            "column_letter": "A",
+            "name": "订单号",
+            "mapping": "order_info.OrderNo",
+            "data_type": "string",
+            "required": true
+        },
+        {
+            "column_letter": "B",
+            "name": "客户名称",
+            "mapping": "order_info.Customer",
+            "data_type": "string",
+            "required": true
+        },
+        {
+            "column_letter": "C",
+            "name": "交货日期",
+            "mapping": "order_info.DeliveryDate",
+            "data_type": "date",
+            "required": true
+        },
+        {
+            "column_letter": "D",
+            "name": "物料编码",
+            "mapping": "row.partNumber",
+            "data_type": "string",
+            "required": true,
+            "transform": {
+                "type": "remove_suffix",
+                "suffixes": ["TZ", "Z", "T"]
+            }
+        },
+        {
+            "column_letter": "E",
+            "name": "物料名称",
+            "mapping": "row.name",
+            "data_type": "string"
+        },
+        {
+            "column_letter": "F",
+            "name": "长度(mm)",
+            "mapping": "row.width",
+            "data_type": "number"
+        },
+        {
+            "column_letter": "G",
+            "name": "宽度(mm)",
+            "mapping": "row.depth",
+            "data_type": "number"
+        },
+        {
+            "column_letter": "H",
+            "name": "高度(mm)",
+            "mapping": "row.height",
+            "data_type": "number"
+        },
+        {
+            "column_letter": "I",
+            "name": "数量",
+            "mapping": "custom_code",
+            "data_type": "number",
+            "custom_code": "row_data.get('Num', 1) * order_info.get('OrderCount', 1)"
+        },
+        {
+            "column_letter": "J",
+            "name": "颜色",
+            "mapping": "row.materialName",
+            "data_type": "string"
+        },
+        {
+            "column_letter": "K",
+            "name": "标准长度",
+            "mapping": "row.standardLength",
+            "data_type": "number"
+        },
+        {
+            "column_letter": "L",
+            "name": "备注",
+            "mapping": "custom:",
+            "data_type": "string"
+        }
+    ],
+    "filter_rules": [
+        {
+            "name": "只处理Line类型",
+            "enabled": true,
+            "expression": "row_type == 'Line'"
+        }
+    ],
+    "post_process_rules": [
+        {
+            "name": "数量取整",
+            "enabled": true,
+            "column_letters": ["I"],
+            "rule_type": "round",
+            "decimals": 0
+        },
+        {
+            "name": "空值替换",
+            "enabled": true,
+            "column_letter": "J",
+            "rule_type": "empty_replace",
+            "default_value": "未指定"
+        }
+    ],
+    "output_rules": {
+        "split_by_cabinet": true,
+        "file_naming": "{supplier_name}_{order_no}_{timestamp}.xlsx"
+    }
+}

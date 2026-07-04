@@ -1,0 +1,180 @@
+{
+    "version": "1.0",
+    "suppliers": [
+        {
+            "supplier_id": "SUP_STONE",
+            "supplier_name": "石材供应商",
+            "description": "台面石材、挡水条等石材类物料",
+            "priority": 1,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRWRS",
+                    "description": "石材编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRWRM",
+                    "description": "大理石编码前缀"
+                }
+            ]
+        },
+        {
+            "supplier_id": "SUP_ALUMINUM",
+            "supplier_name": "铝材供应商",
+            "description": "铝框、铝踢脚板等铝材类物料",
+            "priority": 2,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRD70",
+                    "description": "铝框编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRHF0200001",
+                    "description": "铝制踢脚板编码"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRHF0200002",
+                    "description": "铝制踢脚板编码"
+                }
+            ]
+        },
+        {
+            "supplier_id": "SUP_PVC",
+            "supplier_name": "PVC供应商",
+            "description": "PVC封边、PVC踢脚板等PVC类物料",
+            "priority": 3,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRD50",
+                    "description": "吸塑编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRHF03",
+                    "description": "PVC踢脚板编码前缀"
+                }
+            ]
+        },
+        {
+            "supplier_id": "SUP_PAINT",
+            "supplier_name": "烤漆供应商",
+            "description": "烤漆门板、烤漆部件等烤漆类物料",
+            "priority": 4,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRD51",
+                    "description": "烤漆编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRD52",
+                    "description": "烤漆编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRD53",
+                    "description": "烤漆编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRD54",
+                    "description": "烤漆编码前缀"
+                }
+            ]
+        },
+        {
+            "supplier_id": "SUP_HARDWARE",
+            "supplier_name": "五金供应商",
+            "description": "铰链、导轨、拉手等五金配件",
+            "priority": 5,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRHF",
+                    "description": "五金编码前缀（排除已匹配的踢脚板）"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRHJ",
+                    "description": "铰链编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRHG",
+                    "description": "导轨编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRHL",
+                    "description": "拉手编码前缀"
+                }
+            ]
+        },
+        {
+            "supplier_id": "SUP_WOOD",
+            "supplier_name": "板材供应商",
+            "description": "各类板材、实木部件",
+            "priority": 6,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRD1",
+                    "description": "板材编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRD2",
+                    "description": "双饰面板编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRD3",
+                    "description": "三聚氰胺板编码前缀"
+                }
+            ]
+        },
+        {
+            "supplier_id": "SUP_GLASS",
+            "supplier_name": "玻璃供应商",
+            "description": "玻璃门、玻璃层板等玻璃制品",
+            "priority": 7,
+            "match_rules": [
+                {
+                    "type": "prefix",
+                    "pattern": "GRD60",
+                    "description": "玻璃编码前缀"
+                },
+                {
+                    "type": "prefix",
+                    "pattern": "GRGL",
+                    "description": "玻璃编码前缀"
+                }
+            ]
+        }
+    ],
+    "default_supplier": "SUP_DEFAULT",
+    "match_types": {
+        "prefix": {
+            "name": "前缀匹配",
+            "description": "匹配以指定字符串开头的编码"
+        },
+        "suffix": {
+            "name": "后缀匹配",
+            "description": "匹配以指定字符串结尾的编码"
+        },
+        "regex": {
+            "name": "正则匹配",
+            "description": "使用正则表达式匹配编码"
+        },
+        "exact": {
+            "name": "精确匹配",
+            "description": "完全匹配指定编码"
+        }
+    }
+}

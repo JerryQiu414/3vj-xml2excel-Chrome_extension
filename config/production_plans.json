@@ -1,0 +1,147 @@
+{
+    "plans": [
+        {
+            "id": 1,
+            "name": "外购方案",
+            "code": "WG",
+            "priority": 1,
+            "rules": [
+                {
+                    "matchType": "Panel",
+                    "expression": "Panel.PartNumber[:5]==GRD70|| Panel.PartNumber[:5]==GRD50|| Panel.BasicMaterialCode[:4]==GR50",
+                    "description": "铝框、吸塑属于外购"
+                },
+                {
+                    "matchType": "SubTable",
+                    "expression": "parent.uid==*",
+                    "description": "Table默认外购"
+                }
+            ],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 2,
+            "name": "外协方案",
+            "code": "WX",
+            "priority": 2,
+            "rules": [
+                {
+                    "matchType": "Panel",
+                    "expression": "Panel.PartNumber[:5]==GRD51|| Panel.PartNumber[:5]==GRD52|| Panel.PartNumber[:5]==GRD53|| Panel.PartNumber[:5]==GRD54|| Panel.BasicMaterialCode[:4]==GR51|| Panel.BasicMaterialCode[:4]==GR52|| Panel.BasicMaterialCode[:4]==GR53|| Panel.BasicMaterialCode[:4]==GR54",
+                    "description": "烤漆属于外协"
+                }
+            ],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 3,
+            "name": "加工五金",
+            "code": "GJG",
+            "priority": 3,
+            "rules": [
+                {
+                    "matchType": "Metal",
+                    "expression": "Metal.type==cabinetFloorFootLineType|| Metal.subType==GolaProfile|| Metal.subType==straightener|| Metal.PartNumber[:11]==GRHF0200001|| Metal.PartNumber[:11]==GRHF0200002|| Metal.WJFA==JG|| Metal.WJFA==ZZ",
+                    "description": "类型为踢脚板、免拉手、拉直器、编码为GRHF0200001/GRHF0200002五金、特殊参数WJFA为JG/ZZ"
+                },
+                {
+                    "matchType": "Line",
+                    "expression": "Line.type==cabinetFloorFootLineType&& Line.partNumber[:11]==GRHF0200001",
+                    "description": "类型为踢脚线 编码为GRHF0200001"
+                },
+                {
+                    "matchType": "Line",
+                    "expression": "Line.type==cabinetFloorFootLineType&& Line.partNumber[:11]==GRHF0200002",
+                    "description": "类型为踢脚线 编码为GRHF0200002"
+                }
+            ],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 4,
+            "name": "成品五金方案",
+            "code": "GCP",
+            "priority": 4,
+            "rules": [
+                {
+                    "matchType": "Metal",
+                    "expression": "Metal.type==hardware&& Metal.WJFA==",
+                    "description": "类型为五金 特殊参数WJFA为空"
+                }
+            ],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 5,
+            "name": "房门方案",
+            "code": "FM",
+            "priority": 5,
+            "rules": [],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 6,
+            "name": "圆弧方案",
+            "code": "FM",
+            "priority": 6,
+            "rules": [],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 7,
+            "name": "特殊加工方案",
+            "code": "GYX",
+            "priority": 7,
+            "rules": [
+                {
+                    "matchType": "Panel",
+                    "expression": "Panel.Machines.Machining.GrooveType==1|| Panel.Machines.Machining.GrooveType==0|| Panel.Machines.Machining.Type==5|| Panel.ProduceValues.info3==M|| Panel.ProduceValues.info3==Z|| Panel.ProduceValues.TSFB==X",
+                    "description": "异形板件、开孔方式异形"
+                }
+            ],
+            "rulesLogic": "OR"
+        },
+        {
+            "id": 8,
+            "name": "薄板方案",
+            "code": "GB",
+            "priority": 8,
+            "rules": [
+                {
+                    "matchType": "Panel",
+                    "expression": "Panel.Thickness<=12",
+                    "description": "厚度小于等于12的板件"
+                }
+            ],
+            "rulesLogic": "AND"
+        },
+        {
+            "id": 9,
+            "name": "柜身方案",
+            "code": "GS",
+            "priority": 9,
+            "rules": [
+                {
+                    "matchType": "Panel",
+                    "expression": "Panel.Thickness>12",
+                    "description": "厚度大于12的板件"
+                }
+            ],
+            "rulesLogic": "AND"
+        },
+        {
+            "id": 10,
+            "name": "默认五金方案",
+            "code": "GCP",
+            "priority": 10,
+            "rules": [
+                {
+                    "matchType": "Metal",
+                    "expression": "Metal.type==*",
+                    "description": "未匹配的五金默认成品五金"
+                }
+            ],
+            "rulesLogic": "OR"
+        }
+    ]
+}
