@@ -112,7 +112,7 @@
             "enabled": true,
             "column_letters": ["F", "I"],
             "rule_type": "empty_replace",
-            "default_value": "NULL"
+            "default_value": "null"
         }
     ],
     "output_rules": {

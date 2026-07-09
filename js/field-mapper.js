@@ -138,17 +138,17 @@ class FieldMapper {
     _evalMaterialGrain(rowType, rowData, parentData) {
         const pData = parentData || {};
         let grain = rowData.Grain || rowData.TextureDirection || rowData.textureDirection || rowData.grain || pData.Grain || pData.TextureDirection || pData.textureDirection || pData.grain || 'N';
-        if (grain === 'N') return 0;
-        if (grain === 'H') return 2;
-        if (grain === 'V') return 1;
-        return 0;
+        if (grain === 'N') return '0';
+        if (grain === 'H') return '2';
+        if (grain === 'V') return '1';
+        return '0';
     }
 
     _evalQty(rowType, rowData) {
         if (['Panel', 'Line', 'SubTable'].includes(rowType)) {
             return 1;
         }
-        return parseInt(rowData.Num || 1, 10);
+        return parseFloat(rowData.Num || 1);
     }
 
     _evalFrontBarcode(rowType, rowData) {
@@ -371,7 +371,9 @@ class FieldMapper {
                 value = defaultValue;
             }
 
-            value = this.convertType(value, dataType);
+            if (colName !== '信息1' && colName !== '信息2' && colName !== '信息3' && colName !== '信息4') {
+                value = this.convertType(value, dataType);
+            }
 
             const decimalPlaces = col.decimal_places;
             if (decimalPlaces !== undefined && typeof value === 'number') {
@@ -475,7 +477,7 @@ class FieldMapper {
                     const suffixes = ruleConfig.suffixes_to_remove || [];
                     rowResult[fieldName] = this._cleanupPartNumber(rowResult[fieldName], suffixes);
                 } else if (ruleType === 'empty_replace') {
-                    const defaultValue = ruleConfig.default_value || 'NULL';
+                    const defaultValue = ruleConfig.default_value || 'null';
                     if (!rowResult[fieldName] || rowResult[fieldName] === '') {
                         rowResult[fieldName] = defaultValue;
                     }
@@ -500,7 +502,7 @@ class FieldMapper {
     convertType(value, dataType) {
         if (value === null || value === '') {
             if (dataType === 'number') return 0;
-            if (dataType === 'string') return 'NULL';
+            if (dataType === 'string') return 'null';
             return '';
         }
 

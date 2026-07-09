@@ -220,7 +220,7 @@
         },
         {
             "column_letter": "W",
-            "custom_code": "['Panel', 'Line', 'SubTable'].includes(row_type) ? 1 : parseInt(row_data.Num || 1, 10)",
+            "custom_code": "['Panel', 'Line', 'SubTable'].includes(row_type) ? 1 : parseFloat(row_data.Num || 1).toFixed(2)",
             "data_type": "number",
             "mapping": "custom_code",
             "name": "数量"
@@ -392,7 +392,7 @@
                 "Z",
                 "T"
             ],
-            "require_hardware_type": true,
+            "require_hardware_type": false,
             "require_unit_transfer": true,
             "rule_type": "metal_merge",
             "unit_transfer_value": "1"
@@ -401,14 +401,15 @@
             "enabled": true,
             "execute_mode": "sync",
             "match_patterns": [
-                "GRHH0300001",
-                "GRHH0300002",
-                "GRHH0300003",
-                "GRHH0300004",
+                "GRHD5100011",
+                "GRHH030000301",
+                "GRHH030000101",
+                "GRHA0100028",
+                "GRHH030000401",
                 "GRHF0300007",
                 "GRHA0100042",
-                "GRHD5100011",
-                "GRHA0100028"
+                "GRHH030000201",
+                "GRHF0200001"
             ],
             "match_type": "contains",
             "new_value": "7",

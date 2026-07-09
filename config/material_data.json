@@ -48,7 +48,7 @@
 {"category": "Metal", "part_number": "GRHA0100039", "name": "膨胀螺丝", "usage_formula": "{totalQty}", "min_usage": 1, "quote_unit": "个", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
 {"category": "Metal", "part_number": "GRHA0100040", "name": "柜体连接螺丝", "usage_formula": "{totalQty}", "min_usage": 1, "quote_unit": "个", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
 {"category": "Metal", "part_number": "GRHA0100041", "name": "调整脚", "usage_formula": "{totalQty}", "min_usage": 1, "quote_unit": "个", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
-{"category": "Metal", "part_number": "GRHA0100042", "name": "黑色自粘防尘条", "usage_formula": "{length}/1000", "min_usage": 0.001, "quote_unit": "米", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
+{"category": "Metal", "part_number": "GRHA0100042", "name": "黑色自粘防尘条", "usage_formula": "{height}/1000", "min_usage": 0.001, "quote_unit": "米", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
 {"category": "Metal", "part_number": "GRHA0100043", "name": "M4*500螺杆", "usage_formula": "{totalQty}", "min_usage": 1, "quote_unit": "个", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
 {"category": "Metal", "part_number": "GRHA0100044", "name": "M4*45沉头十字螺杆", "usage_formula": "{totalQty}", "min_usage": 1, "quote_unit": "个", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}
 {"category": "Metal", "part_number": "GRHA0100065", "name": "M4*25沉头十字螺杆", "usage_formula": "{totalQty}", "min_usage": 1, "quote_unit": "个", "supplier": "顾信", "supplier_code": "GX", "remark": null, "_sheet": "Metal"}

@@ -1,0 +1,14 @@
+{
+  "name": "3vj-xml2excel-chrome",
+  "version": "1.0.0",
+  "description": "三维家生产XML转EXCEL Chrome插件",
+  "scripts": {
+    "build:light": "node build.js 1",
+    "build:medium": "node build.js 2",
+    "build:heavy": "node build.js 3"
+  },
+  "dependencies": {
+    "javascript-obfuscator": "^4.1.0",
+    "jszip": "^3.10.1"
+  }
+}

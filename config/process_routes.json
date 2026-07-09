@@ -105,7 +105,7 @@
             "prerequisites": [
                 {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""},
                 {"field": "EdgeGroup.Edge.EdgeType", "operator": "any_not_equals", "value": "N"},
-                {"field": "EdgeThickType", "operator": "not_in", "value": ["无封边", "null", "Null", "NULL"]}
+                {"field": "EdgeThickType", "operator": "not_in", "value": ["无封边", "null", "Null"]}
             ],
             "prerequisite_types": ["Panel"]
         },
@@ -134,7 +134,7 @@
             ],
             "prerequisites": [
                 {"field": "BasicMaterialCode", "operator": "not_empty", "value": ""},
-                {"field": "EdgeThickType", "operator": "not_in", "value": ["无封边", "null", "Null", "NULL"]}
+                {"field": "EdgeThickType", "operator": "not_in", "value": ["无封边", "null", "Null"]}
             ],
             "prerequisite_types": ["Panel"]
         },

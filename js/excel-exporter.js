@@ -4,6 +4,14 @@ class ExcelExporter {
         this.materialMap = this._buildMaterialMap();
     }
 
+    _formatNumber(value, decimals = 2) {
+        if (value === undefined || value === null || value === '' || isNaN(value)) {
+            return '';
+        }
+        const num = parseFloat(value);
+        return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    }
+
     _buildMaterialMap() {
         const map = {};
         for (const item of this.materialData) {
@@ -26,13 +34,36 @@ class ExcelExporter {
         return str;
     }
 
+    _safeEval(expr, vars) {
+        const allowedOps = ['+', '-', '*', '/', '%', '(', ')', '.', ',', '>', '<', '=', '!'];
+        const sanitized = expr.split('').filter(c => {
+            return /[a-zA-Z0-9]/.test(c) || allowedOps.includes(c);
+        }).join('');
+        const keys = Object.keys(vars);
+        const values = keys.map(k => vars[k]);
+        try {
+            const fn = new (Function.prototype.bind.apply(Function, [null, ...keys, `return ${sanitized};`]))();
+            return fn(...values);
+        } catch (e) {
+            return 0;
+        }
+    }
+
     _createWorksheet(data, columns) {
         const ws_data = [];
         
         ws_data.push(columns.map(c => c.name));
         
-        for (const row of data) {
+        console.log(`DEBUG_CREATE_WORKSHEET: data.length=${data.length}, columns=${columns.map(c => c.key).join(',')}`);
+        
+        for (let i = 0; i < data.length; i++) {
+            const row = data[i];
             const rowData = [];
+            
+            if (i < 5 || i === data.length - 1) {
+                console.log(`DEBUG_CREATE_WORKSHEET_ROW_${i}: partNumber=${row.partNumber}, qty=${row.qty}, usage=${row.usage}, totalQty=${row.totalQty}, quoteUnit=${row.quoteUnit}`);
+            }
+            
             for (const col of columns) {
                 if (col.key === 'index') {
                     rowData.push(ws_data.length);
@@ -41,11 +72,16 @@ class ExcelExporter {
                 } else if (col.formula) {
                     try {
                         const vars = { ...row };
-                        const cleaned = col.formula.replace(/\{(\w+)\}/g, (_, key) => {
-                            return key in vars ? vars[key] : `vars['${key}']`;
+                        const cleaned = col.formula.replace(/\{([^}]+)\}/g, (_, expr) => {
+                            const keys = Object.keys(vars);
+                            let replaced = expr;
+                            for (const key of keys) {
+                                const regex = new RegExp(`\\b${key}\\b`, 'g');
+                                replaced = replaced.replace(regex, vars[key]);
+                            }
+                            return `(${replaced})`;
                         });
-                        const fn = new Function('vars', `return ${cleaned};`);
-                        const val = fn(vars);
+                        const val = this._safeEval(cleaned, vars);
                         rowData.push(col.round !== undefined 
                             ? Math.round(val * Math.pow(10, col.round)) / Math.pow(10, col.round)
                             : val);
@@ -53,13 +89,27 @@ class ExcelExporter {
                         rowData.push('');
                     }
                 } else {
-                    const val = row[col.key];
-                    rowData.push(val !== undefined && val !== null && val !== '' ? val : '');
-                }
+                        let val = row[col.key];
+                        
+                        if (col.key === 'totalQty' && (val === undefined || val === null || val === '')) {
+                            val = row['qty'];
+                        }
+                        
+                        if (col.key === 'usage' && i < 5) {
+                            console.log(`DEBUG_CREATE_WORKSHEET_USAGE_${i}: col.key=${col.key}, raw_val=${row[col.key]}, final_val=${val !== undefined && val !== null && val !== '' ? val : ''}`);
+                        }
+                        
+                        if (col.data_type === 'number') {
+                            val = this._formatNumber(val, col.decimal_places || 2);
+                        }
+                        
+                        rowData.push(val !== undefined && val !== null && val !== '' ? val : '');
+                    }
             }
             ws_data.push(rowData);
         }
 
+        console.log(`DEBUG_CREATE_WORKSHEET_END: ws_data rows=${ws_data.length - 1}`);
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
         
         for (let i = 0; i < columns.length; i++) {
@@ -94,7 +144,13 @@ class ExcelExporter {
             const rowData = [];
             for (const col of columnNames) {
                 const val = row[col];
-                rowData.push(val !== undefined && val !== null && val !== '' ? val : '');
+                if (val === 0 || val === '0') {
+                    rowData.push('0');
+                } else if (val !== undefined && val !== null && val !== '') {
+                    rowData.push(val);
+                } else {
+                    rowData.push('');
+                }
             }
             mainWsData.push(rowData);
         }
@@ -137,6 +193,11 @@ class ExcelExporter {
 
     _exportToExcelBySupplier(data, columns, baseName) {
         const supplierGroups = {};
+        
+        if (data.length > 0) {
+            console.log('DEBUG: Row keys:', Object.keys(data[0]));
+            console.log('DEBUG: First row:', JSON.stringify(data[0]));
+        }
         
         for (const rowData of data) {
             const systemType = rowData['系统类型'] || '';
@@ -184,7 +245,13 @@ class ExcelExporter {
                 const rowData = [];
                 for (const col of columns) {
                     const val = row[col];
-                    rowData.push(val !== undefined && val !== null && val !== '' ? val : '');
+                    if (val === 0 || val === '0') {
+                        rowData.push('0');
+                    } else if (val !== undefined && val !== null && val !== '') {
+                        rowData.push(val);
+                    } else {
+                        rowData.push('');
+                    }
                 }
                 wsData.push(rowData);
             }
@@ -227,28 +294,34 @@ class ExcelExporter {
         const wb = XLSX.utils.book_new();
         const worksheets = bomRules.worksheets || [];
         
+        const detailRows = [];
+        
         for (const wsConfig of worksheets) {
             const wsName = wsConfig.name;
             
-            let filteredRows = [...bomResult.bomRows];
+            let filteredRows;
             
-            if (wsConfig.type_filter) {
-                filteredRows = filteredRows.filter(row => wsConfig.type_filter.includes(row.type));
-            }
-            
-            if (wsConfig.category_filter) {
-                filteredRows = filteredRows.filter(row => wsConfig.category_filter.includes(row.category));
-            }
-            
-            if (wsConfig.door_category_filter && wsConfig.door_category_filter.length) {
-                filteredRows = filteredRows.filter(row => {
-                    if (!row.isDoor) return false;
-                    return wsConfig.door_category_filter.includes(row.doorCategory);
-                });
-            }
-            
-            if (wsConfig.summary && bomResult.groupedData) {
-                filteredRows = [...bomResult.groupedData];
+            if (wsConfig.summary) {
+                filteredRows = this._groupDetailRows(detailRows);
+            } else {
+                filteredRows = [...bomResult.bomRows];
+                
+                if (wsConfig.type_filter) {
+                    filteredRows = filteredRows.filter(row => wsConfig.type_filter.includes(row.type));
+                }
+                
+                if (wsConfig.category_filter) {
+                    filteredRows = filteredRows.filter(row => wsConfig.category_filter.includes(row.category));
+                }
+                
+                if (wsConfig.door_category_filter && wsConfig.door_category_filter.length) {
+                    filteredRows = filteredRows.filter(row => {
+                        if (!row.isDoor) return false;
+                        return wsConfig.door_category_filter.includes(row.doorCategory);
+                    });
+                }
+                
+                detailRows.push(...filteredRows);
             }
             
             const ws = this._createWorksheet(filteredRows, wsConfig.columns);
@@ -258,11 +331,15 @@ class ExcelExporter {
         const mainBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
         jszip.file(`${orderNo}_BOM.xlsx`, mainBuffer);
         
-        if (bomResult.groupedData) {
-            const supplierFiles = this._exportBOMBySupplier(bomResult.groupedData, orderNo);
-            for (const sf of supplierFiles) {
-                jszip.file(sf.fileName, sf.buffer);
-            }
+        const groupedData = this._groupDetailRows(detailRows);
+        console.log(`DEBUG_EXPORT_BOM_WITH_SUPPLIER: groupedData rows=${groupedData.length}`);
+        
+        const supplierFiles = this._exportBOMBySupplier(groupedData, orderNo);
+        console.log(`DEBUG_EXPORT_BOM_WITH_SUPPLIER: supplierFiles count=${supplierFiles.length}`);
+        
+        for (const sf of supplierFiles) {
+            jszip.file(sf.fileName, sf.buffer);
+            console.log(`DEBUG_EXPORT_BOM_WITH_SUPPLIER_FILE: ${sf.fileName}`);
         }
         
         if (xmlString) {
@@ -279,17 +356,17 @@ class ExcelExporter {
         const supplierGroups = {};
         
         for (const row of groupedData) {
-            let partNumber = row.partNumber || '';
+            let matchKey = row.type === 'Panel' && row.materialMatchKey ? row.materialMatchKey : row.partNumber;
             let supplier = '未匹配';
             
-            if (partNumber && partNumber !== 'null') {
-                const partNumberClean = this._removeSuffix(partNumber);
+            if (matchKey && matchKey !== 'null') {
+                const matchKeyClean = this._removeSuffix(matchKey);
                 
-                if (partNumberClean in this.materialMap) {
-                    supplier = this.materialMap[partNumberClean].supplier || '';
+                if (matchKeyClean in this.materialMap) {
+                    supplier = this.materialMap[matchKeyClean].supplier || '';
                 } else {
                     for (const key of Object.keys(this.materialMap)) {
-                        if (key.startsWith(partNumberClean)) {
+                        if (key.startsWith(matchKeyClean)) {
                             supplier = this.materialMap[key].supplier || '';
                             break;
                         }
@@ -307,17 +384,17 @@ class ExcelExporter {
         
         const supplierFiles = [];
         const columns = [
-            { key: 'index', name: '序号', width: 8 },
-            { key: 'partNumber', name: '物料编码', width: 20 },
-            { key: 'name', name: '物料名称', width: 35 },
-            { key: 'spec', name: '规格(mm)', width: 20 },
-            { key: 'material', name: '材质', width: 15 },
-            { key: 'type', name: '类型', width: 10 },
-            { key: 'totalQty', name: '总数量', width: 12 },
-            { key: 'unit', name: '单位', width: 10 },
-            { key: 'totalLength', name: '总长度(m)', width: 15 },
-            { key: 'totalArea', name: '总面积(m²)', width: 15 },
-            { key: 'cabinets', name: '使用柜体', width: 25 }
+            { key: 'index', name: '序号' },
+            { key: 'type', name: '类型' },
+            { key: 'partNumber', name: '物料编码' },
+            { key: 'name', name: '物料名称' },
+            { key: 'doorCategory', name: '门板分类' },
+            { key: 'usage', name: '用量' },
+            { key: 'quoteUnit', name: '报价单位' },
+            { key: 'color', name: '颜色' },
+            { key: 'material', name: '基材' },
+            { key: 'supplier', name: '供方处理' },
+            { key: 'supplier_code', name: '供方编码' }
         ];
         
         for (const [supplier, rows] of Object.entries(supplierGroups)) {
@@ -325,7 +402,7 @@ class ExcelExporter {
             const ws = this._createWorksheet(rows, columns);
             
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "物料清单");
+            XLSX.utils.book_append_sheet(wb, ws, "物料汇总");
             const buffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
             
             supplierFiles.push({
@@ -358,7 +435,13 @@ class ExcelExporter {
             const rowData = [];
             for (const col of columnNames) {
                 const val = row[col];
-                rowData.push(val !== undefined && val !== null && val !== '' ? val : '');
+                if (val === 0 || val === '0') {
+                    rowData.push('0');
+                } else if (val !== undefined && val !== null && val !== '') {
+                    rowData.push(val);
+                } else {
+                    rowData.push('');
+                }
             }
             ws_data.push(rowData);
         }
@@ -390,34 +473,50 @@ class ExcelExporter {
         return filename;
     }
 
-    exportBOM(bomResult, bomRules) {
+    async exportBOM(bomResult, bomRules) {
         const wb = XLSX.utils.book_new();
         const worksheets = bomRules.worksheets || [];
         const bomRows = bomResult.bomRows;
-        const groupedData = bomResult.groupedData;
+        
+        console.log(`DEBUG_EXPORT_START: total bomRows=${bomRows.length}`);
+        
+        const detailRows = [];
 
         for (const wsConfig of worksheets) {
             const wsName = wsConfig.name;
             
-            let filteredRows = [...bomRows];
+            let filteredRows;
             
-            if (wsConfig.type_filter) {
-                filteredRows = filteredRows.filter(row => wsConfig.type_filter.includes(row.type));
+            if (wsConfig.summary) {
+                filteredRows = this._groupDetailRows(detailRows);
+                console.log(`DEBUG_EXPORT_WORKSHEET: name=${wsName}, summary=true, filteredRows=${filteredRows.length}`);
+            } else {
+                filteredRows = [...bomRows];
+                
+                if (wsConfig.type_filter) {
+                    filteredRows = filteredRows.filter(row => wsConfig.type_filter.includes(row.type));
+                }
+                
+                if (wsConfig.category_filter) {
+                    filteredRows = filteredRows.filter(row => wsConfig.category_filter.includes(row.category));
+                }
+                
+                if (wsConfig.door_category_filter && wsConfig.door_category_filter.length) {
+                    filteredRows = filteredRows.filter(row => {
+                        if (!row.isDoor) return false;
+                        return wsConfig.door_category_filter.includes(row.doorCategory);
+                    });
+                }
+                
+                detailRows.push(...filteredRows);
+                console.log(`DEBUG_EXPORT_WORKSHEET: name=${wsName}, type_filter=${wsConfig.type_filter}, category_filter=${wsConfig.category_filter}, filteredRows=${filteredRows.length}`);
             }
             
-            if (wsConfig.category_filter) {
-                filteredRows = filteredRows.filter(row => wsConfig.category_filter.includes(row.category));
-            }
-            
-            if (wsConfig.door_category_filter && wsConfig.door_category_filter.length) {
-                filteredRows = filteredRows.filter(row => {
-                    if (!row.isDoor) return false;
-                    return wsConfig.door_category_filter.includes(row.doorCategory);
-                });
-            }
-            
-            if (wsConfig.summary && groupedData) {
-                filteredRows = [...groupedData];
+            if (filteredRows.length > 0) {
+                console.log(`DEBUG_EXPORT_WORKSHEET_FIRST_ROW: name=${wsName}, partNumber=${filteredRows[0].partNumber}, qty=${filteredRows[0].qty}, usage=${filteredRows[0].usage}, totalQty=${filteredRows[0].totalQty}`);
+                if (filteredRows.length > 1) {
+                    console.log(`DEBUG_EXPORT_WORKSHEET_LAST_ROW: name=${wsName}, partNumber=${filteredRows[filteredRows.length - 1].partNumber}, qty=${filteredRows[filteredRows.length - 1].qty}, usage=${filteredRows[filteredRows.length - 1].usage}, totalQty=${filteredRows[filteredRows.length - 1].totalQty}`);
+                }
             }
             
             const ws = this._createWorksheet(filteredRows, wsConfig.columns);
@@ -425,10 +524,33 @@ class ExcelExporter {
         }
 
         const orderNo = bomResult.orderInfo.OrderNo || 'UNKNOWN';
-        const filename = `BOM_${orderNo}_${new Date().toISOString().slice(0, 10)}.xlsx`;
         
-        XLSX.writeFile(wb, filename);
-        return filename;
+        const groupedData = this._groupDetailRows(detailRows);
+        console.log(`DEBUG_EXPORT_SUPPLIER: groupedData rows=${groupedData.length}`);
+        
+        const supplierFiles = this._exportBOMBySupplier(groupedData, orderNo);
+        console.log(`DEBUG_EXPORT_SUPPLIER: supplierFiles count=${supplierFiles.length}`);
+        
+        if (supplierFiles.length > 0) {
+            const jszip = new JSZip();
+            
+            const mainBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+            jszip.file(`BOM_${orderNo}_${new Date().toISOString().slice(0, 10)}.xlsx`, mainBuffer);
+            
+            for (const sf of supplierFiles) {
+                jszip.file(sf.fileName, sf.buffer);
+                console.log(`DEBUG_EXPORT_SUPPLIER_FILE: ${sf.fileName}, rows=${sf.rowsCount}`);
+            }
+            
+            const zipContent = await jszip.generateAsync({ type: 'blob' });
+            this._downloadBlob(zipContent, `${orderNo}_BOM.zip`);
+            
+            return `${orderNo}_BOM.zip`;
+        } else {
+            const filename = `BOM_${orderNo}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(wb, filename);
+            return filename;
+        }
     }
 
     exportCSV(rows, columnNames, filename) {
@@ -453,5 +575,75 @@ class ExcelExporter {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+    
+    _groupDetailRows(detailRows) {
+        const groups = {};
+        
+        for (const row of detailRows) {
+            const key = String(row.materialMatchKey || row.partNumber || 'UNKNOWN');
+            if (!key || key === 'null') continue;
+            
+            if (!groups[key]) {
+                groups[key] = [];
+            }
+            groups[key].push(row);
+        }
+        
+        const result = [];
+        for (const [key, items] of Object.entries(groups)) {
+            const first = items[0];
+            const totalQty = items.reduce((sum, item) => sum + (item.qty || 0), 0);
+            const totalUsage = items.reduce((sum, item) => sum + (item.usage || 0), 0);
+            
+            const allCabinets = new Set();
+            items.forEach(item => {
+                if (item.cabinetNo) allCabinets.add(item.cabinetNo);
+                if (item.cabinets) {
+                    if (Array.isArray(item.cabinets)) {
+                        item.cabinets.forEach(c => allCabinets.add(c));
+                    } else {
+                        allCabinets.add(item.cabinets);
+                    }
+                }
+            });
+            
+            const isPanel = first.type === 'Panel';
+            const finalPartNumber = isPanel && first.materialMatchKey ? first.materialMatchKey : first.partNumber;
+            const finalName = isPanel ? `${first.color || ''} ${first.material || ''}`.trim() : first.name;
+            
+            result.push({
+                partNumber: finalPartNumber,
+                name: finalName,
+                material: first.material,
+                color: first.color,
+                type: first.type,
+                typeCode: first.typeCode,
+                category: first.category,
+                length: first.length,
+                width: first.width,
+                thickness: first.thickness,
+                totalQty: totalQty,
+                unit: first.unit,
+                cabinets: [...allCabinets].join(', '),
+                cabinetNames: items.map(i => i.cabinetName).filter(Boolean).join(', '),
+                barcode: first.barcode,
+                edgeBand: first.edgeBand,
+                module: first.module,
+                doorCategory: first.doorCategory,
+                isDoor: first.isDoor,
+                supplier: first.supplier,
+                supplier_code: first.supplier_code,
+                quoteUnit: first.quoteUnit,
+                usage: typeof totalUsage === 'number' ? Math.ceil(totalUsage * 100) / 100 : totalUsage,
+                totalUsage: typeof totalUsage === 'number' ? Math.ceil(totalUsage * 100) / 100 : totalUsage,
+                materialMatchKey: first.materialMatchKey
+            });
+        }
+        
+        return result.sort((a, b) => {
+            if (a.typeCode !== b.typeCode) return a.typeCode.localeCompare(b.typeCode);
+            return a.partNumber.localeCompare(b.partNumber);
+        });
     }
 }

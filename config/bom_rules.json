@@ -18,7 +18,7 @@
         },
         "SubTable": {
             "xpath": ".//tables/table/TableBoard/Table/SubTable",
-            "parent_xpath": null
+            "parent_xpath": ".//tables/table/TableBoard/Table"
         }
     },
     
@@ -31,7 +31,8 @@
     
     "field_mappings": {
         "Panel": {
-            "partNumber": ["BasicMaterialMCode", "PartNumber"],
+            "materialMatchKey": "BasicMaterialMCode",
+            "partNumber": "PartNumber",
             "name": "Name",
             "material": "BasicMaterial",
             "color": "Material",
@@ -74,14 +75,17 @@
             "barcode": "Id"
         },
         "SubTable": {
-            "partNumber": ["partNumber", "PartNumber"],
-            "name": ["name", "Name"],
-            "material": "Material",
+            "partNumber": ["parent.partNumber", "parent.PartNumber", "partNumber", "PartNumber"],
+            "name": ["parent.materialCategoryName", "name", "Name"],
+            "material": ["parent.materialCategoryName", "Material"],
+            "color": ["parent.materialName", "Material"],
             "length": "width",
             "width": "depth",
             "thickness": "parent.height",
             "qty": "Num",
             "unit": "固定:块",
+            "cabinetNo": "parent.tableNo",
+            "cabinetName": "parent.materialCategoryName",
             "barcode": "parent.Id"
         }
     },
@@ -99,7 +103,7 @@
             "formula": "length * width / 1000000",
             "unit": "m²",
             "aggregate": "sum",
-            "round": 4
+            "round": 2
         },
         "single": {
             "enabled": true,
@@ -181,11 +185,11 @@
                 {"key": "thickness", "name": "厚"},
                 {"key": "totalQty", "name": "数量"},
                 {"key": "sets", "name": "套数", "value": 1},
-                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
-                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "usage", "name": "用量"},
+                {"key": "quoteUnit", "name": "单位"},
                 {"key": "edgeBand", "name": "封边"},
                 {"key": "barcode", "name": "部件条码"},
-                {"key": "partNumber", "name": "板材名称"},
+                {"key": "materialMatchKey", "name": "板材名称"},
                 {"key": "isSpecial", "name": "是否异形"},
                 {"key": "remark", "name": "备注", "value": ""},
                 {"key": "module", "name": "下单模块"},
@@ -212,11 +216,11 @@
                 {"key": "thickness", "name": "厚"},
                 {"key": "totalQty", "name": "数量"},
                 {"key": "sets", "name": "套数", "value": 1},
-                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
-                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "usage", "name": "用量"},
+                {"key": "quoteUnit", "name": "单位"},
                 {"key": "edgeBand", "name": "封边"},
                 {"key": "barcode", "name": "部件条码"},
-                {"key": "partNumber", "name": "板材名称"},
+                {"key": "materialMatchKey", "name": "板材名称"},
                 {"key": "isSpecial", "name": "是否异形"},
                 {"key": "remark", "name": "备注", "value": ""},
                 {"key": "module", "name": "下单模块"},
@@ -243,11 +247,11 @@
                 {"key": "thickness", "name": "厚"},
                 {"key": "totalQty", "name": "数量"},
                 {"key": "sets", "name": "套数", "value": 1},
-                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
-                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "usage", "name": "用量"},
+                {"key": "quoteUnit", "name": "单位"},
                 {"key": "edgeBand", "name": "封边"},
                 {"key": "barcode", "name": "部件条码"},
-                {"key": "partNumber", "name": "板材名称"},
+                {"key": "materialMatchKey", "name": "板材名称"},
                 {"key": "isSpecial", "name": "是否异形"},
                 {"key": "remark", "name": "备注", "value": ""},
                 {"key": "module", "name": "下单模块"},
@@ -274,11 +278,11 @@
                 {"key": "thickness", "name": "厚"},
                 {"key": "totalQty", "name": "数量"},
                 {"key": "sets", "name": "套数", "value": 1},
-                {"key": "usage", "name": "用量", "formula": "length * width / 1000000", "round": 2},
-                {"key": "usageUnit", "name": "单位", "value": "平方米"},
+                {"key": "usage", "name": "用量"},
+                {"key": "quoteUnit", "name": "单位"},
                 {"key": "edgeBand", "name": "封边"},
                 {"key": "barcode", "name": "部件条码"},
-                {"key": "partNumber", "name": "板材名称"},
+                {"key": "materialMatchKey", "name": "板材名称"},
                 {"key": "isSpecial", "name": "是否异形"},
                 {"key": "remark", "name": "备注", "value": ""},
                 {"key": "module", "name": "下单模块"},
@@ -319,7 +323,7 @@
                 {"key": "partNumber", "name": "物料编码"},
                 {"key": "name", "name": "物料名称"},
                 {"key": "doorCategory", "name": "门板分类"},
-                {"key": "usage", "name": "用量"},
+                {"key": "totalUsage", "name": "用量"},
                 {"key": "quoteUnit", "name": "报价单位"},
                 {"key": "color", "name": "颜色"},
                 {"key": "material", "name": "基材"},
@@ -337,22 +341,18 @@
                 "category": "铝框门板",
                 "conditions": [
                     {
-                        "field": "partNumber",
-                        "prefixes": ["GRD7"]
-                    },
-                    {
-                        "field": "material",
+                        "field": "color",
                         "prefixes": ["GRA"]
                     }
                 ],
-                "logic": "OR",
+                "logic": "AND",
                 "priority": 0
             },
             {
                 "category": "烤漆门板",
                 "conditions": [
                     {
-                        "field": "material",
+                        "field": "color",
                         "prefixes": ["GR51", "GR52", "GR53", "GR54"]
                     }
                 ],
@@ -363,8 +363,8 @@
                 "category": "免漆门板",
                 "conditions": [
                     {
-                        "field": "material",
-                        "prefixes": ["GR1", "GR2", "GR3", "GR4", "GR6", "GR8"]
+                        "field": "color",
+                        "prefixes": ["GR1", "GR2", "GR3", "GR4", "GR50","GR6", "GR8"]
                     }
                 ],
                 "logic": "AND",

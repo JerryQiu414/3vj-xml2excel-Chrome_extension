@@ -107,6 +107,25 @@ class XMLParser {
     }
 
     findParentNode(element, rowType) {
+        const sources = this.config.row_data_sources || {};
+        const sourceConfig = sources[rowType] || {};
+        
+        if (sourceConfig.parent_xpath) {
+            try {
+                const doc = element.ownerDocument || element;
+                const result = doc.evaluate(sourceConfig.parent_xpath, element, null, XPathResult.ANY_TYPE, null);
+                let node = result.iterateNext();
+                while (node) {
+                    if (node.contains(element)) {
+                        return node;
+                    }
+                    node = result.iterateNext();
+                }
+            } catch (e) {
+                console.error('parent_xpath查询错误:', sourceConfig.parent_xpath, e);
+            }
+        }
+
         const parentTags = {
             'Panel': 'Cabinet',
             'Metal': 'Cabinet',
@@ -164,6 +183,20 @@ class XMLParser {
                 console.log(`XPath未找到，尝试getElementsByTagName: ${tagName}`);
                 elements = Array.from(root.getElementsByTagName(tagName));
                 console.log(`getElementsByTagName找到 ${elements.length} 个 ${rowType} 元素`);
+                
+                if (rowType === 'Line') {
+                    elements = elements.filter(elem => {
+                        let parent = elem.parentNode;
+                        while (parent) {
+                            if (parent.tagName === 'baseLine') {
+                                return true;
+                            }
+                            parent = parent.parentNode;
+                        }
+                        return false;
+                    });
+                    console.log(`过滤后找到 ${elements.length} 个 ${rowType} 元素`);
+                }
             }
             
             for (const elem of elements) {

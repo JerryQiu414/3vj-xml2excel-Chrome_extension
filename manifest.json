@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "XML转EXCEL - BOM/FMS转换工具",
-  "version": "1.0.0",
-  "description": "快速将三维家XML文件转换为FMS或BOM格式的Excel文件",
-  "permissions": ["activeTab", "storage", "downloads"],
+  "version": "1.0.1",
+  "description": "Goldreif专用版本--将三维家XML文件转换Excel文件",
+  "permissions": ["activeTab", "storage", "downloads", "sidePanel"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -12,6 +12,12 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   },
   "icons": {
     "16": "icons/icon16.png",
